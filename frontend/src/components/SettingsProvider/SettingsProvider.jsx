@@ -16,6 +16,8 @@ export const getFingerprint = async () => {
     return result.visitorId; // This is a unique device/browser ID
 };
 
+const hostUrl = `http://localhost:5000`;
+
 // Create a custom hook for easier access
 export const useSettings = () => useContext(SettingsContext);
 export const useSignup = () => useContext(SignupContext);
@@ -227,7 +229,7 @@ export const SettingsProvider = ({ children }) => {
         setUserSetting(resetUserSetting);
         setThemeSettings(resetThemeSettings);
         try {
-            const res = await axios.post("http://localhost:5000/api/settings/save", resetPayload);
+            const res = await axios.post(`${hostUrl}/api/settings/save`, resetPayload);
             showNotification(res.data.success ? "Settings reset to default!" : "Failed to reset settings.", res.data.success ? "positive" : "negative");
             closeModal();
         } catch (error) {
@@ -300,7 +302,7 @@ export const SettingsProvider = ({ children }) => {
     useEffect(() => {
         const fetchSettings = async () => {
             try {
-                const res = await axios.get("http://localhost:5000/api/settings");
+                const res = await axios.get(`${hostUrl}/api/settings`);
                 if (res.data) {
                     setApiKey(res.data.apiKey || '');
                     setAiAgent(res.data.aiAgent || '');
@@ -325,7 +327,7 @@ export const SettingsProvider = ({ children }) => {
         e.preventDefault();
         const payload = { spreadsheetId, apiKey, aiAgent, emailSettings, customerSetting, userSetting, themeSettings, permissionSettings };
         try {
-            const res = await axios.post("http://localhost:5000/api/settings/save", payload);
+            const res = await axios.post(`${hostUrl}/api/settings/save`, payload);
             showNotification(res.data.success ? "Settings saved successfully!" : "Failed to save settings.", res.data.success ? "positive" : "negative");
             closeModal();
         } catch (error) {
@@ -382,7 +384,7 @@ export const SignupProvider = ({ children }) => {
         if (password !== confirmPassword) return showNotification("Passwords do not match!", "negative");
         try {
             const payload = { fullName, email, password, phone, department, allowLogin, status, otpNeeded };
-            const res = await axios.post("http://localhost:5000/api/user/signup", payload);
+            const res = await axios.post(`${hostUrl}/api/user/signup`, payload);
             if (res.data.success) {
                 showNotification("Signup successfully!", "positive");
             } else {
@@ -438,7 +440,7 @@ export const LoginProvider = ({ children }) => {
         e.preventDefault();
         const field = !email ? 'email' : !password ? 'password' : null;
         if (field) return showNotification(`Please enter your ${field}.`, "negative");
-        const apiEndpoint = userRole === 'minion' ? 'http://localhost:5000/api/user/login' : 'http://localhost:5000/api/userlists/login';
+        const apiEndpoint = userRole === 'minion' ? `${hostUrl}/api/user/login` : `${hostUrl}/api/userlists/login`;
         try {
             const payload = { email, password, fingerprint };
             const res = await axios.post(apiEndpoint, payload);
@@ -593,7 +595,7 @@ export const CustomersProvider = ({ children }) => {
 
     const fetchCustomers = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/customers');
+            const res = await axios.get(`${hostUrl}/api/customers`);
             if (res.status === 200) {
                 setIsLoaded(true);
                 setCustomers(res.data?.customers || res.data);
@@ -660,7 +662,7 @@ export const CustomersProvider = ({ children }) => {
             customerPaymentDays
         };
         try {
-            const res = await axios.post('http://localhost:5000/api/customers/save', payload);
+            const res = await axios.post(`${hostUrl}/api/customers/save`, payload);
             if (res.status === 200 || res.status === 201) {
                 showNotification('Customer added successfully.', 'positive');
                 setNextCustomerID(nextCustomerID + 1);
@@ -747,7 +749,7 @@ export const CustomersProvider = ({ children }) => {
                 customerPaymentDays: row['Payment Days'] || '30'
             };
             try {
-                const res = await axios.post('http://localhost:5000/api/customers/save', payload);
+                const res = await axios.post(`${hostUrl}/api/customers/save`, payload);
                 if (res.status === 200 || res.status === 201) {
                     localID++;
                 } else {
@@ -765,7 +767,7 @@ export const CustomersProvider = ({ children }) => {
     };
 
     const handleExportCustomerCSV = async () => {
-        const res = await axios.get('http://localhost:5000/api/customers');
+        const res = await axios.get(`${hostUrl}/api/customers`);
         const customers = res.data;
 
         const csvRows = customers.map((customer) => {
@@ -879,7 +881,7 @@ export const NextIDProvider = ({ children }) => {
     useEffect(() => {
         const fetchInitialIDs = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/miscs');
+                const res = await axios.get(`${hostUrl}/api/miscs`);
                 if (res.data) {
                     setNextCustomerID(res.data.nextCustomerID || 1);
                     setNextUserID(res.data.nextUserID || 1);
@@ -896,7 +898,7 @@ export const NextIDProvider = ({ children }) => {
             if (nextCustomerID === 1 && nextUserID === 1) return; 
 
             try {
-                await axios.post('http://localhost:5000/api/miscs/save', {
+                await axios.post(`${hostUrl}/api/miscs/save`, {
                     nextCustomerId: nextCustomerID,
                     nextUserId: nextUserID
                 });
@@ -985,7 +987,7 @@ export const UserListsProvider = ({ children }) => {
 
     const fetchUserLists = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/userlists');
+            const res = await axios.get(`${hostUrl}/api/userlists`);
             if (res.status === 200) {
                 setIsLoaded(true);
                 setUserLists(res.data?.userLists || res.data);
@@ -1055,7 +1057,7 @@ export const UserListsProvider = ({ children }) => {
             userListOtpNeeded
         };
         try {
-            const res = await axios.post('http://localhost:5000/api/userlists/save', payload);
+            const res = await axios.post(`${hostUrl}/api/userlists/save`, payload);
             if (res.status === 200 || res.status === 201) {
                 showNotification('UserList added successfully.', 'positive');
                 setNextUserID(nextUserID + 1);
@@ -1143,7 +1145,7 @@ export const UserListsProvider = ({ children }) => {
                 userListOtpNeeded: row['OTP Needed'] || false
             };
             try {
-                const res = await axios.post('http://localhost:5000/api/userlists/save', payload);
+                const res = await axios.post(`${hostUrl}/api/userlists/save`, payload);
                 if (res.status === 200 || res.status === 201) {
                     localID++;
                 } else {
@@ -1161,7 +1163,7 @@ export const UserListsProvider = ({ children }) => {
     };
 
     const handleExportUserListCSV = async () => {
-        const res = await axios.get('http://localhost:5000/api/userlists');
+        const res = await axios.get(`${hostUrl}/api/userlists`);
         const userLists = res.data;
         const csvRows = userLists.map((userList) => {
             return {
