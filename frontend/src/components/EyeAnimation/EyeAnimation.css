@@ -1,0 +1,25 @@
+.eye-toggle-wrapper {
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+
+.eye-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform-origin: center;
+}
+
+.eye-icon.hidden {
+  opacity: 0;
+  transform: scale(0.8) rotate(-15deg);
+  pointer-events: none;
+}
+
+.eye-icon.visible {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+  pointer-events: auto;
+}

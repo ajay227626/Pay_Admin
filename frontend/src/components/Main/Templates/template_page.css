@@ -1,0 +1,38 @@
+#template_page {
+    height: calc(100% - var(--header-height));
+}
+
+.email-editor-container > div > div {
+    min-height: 72vh !important;
+}
+
+.email-editor-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+.template-editor-body {
+    flex: 1;
+    overflow: auto;
+    padding: 1.5rem;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    position: relative;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 87px;
+}
+
+.template-editor-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--background-color);
+}

@@ -1,0 +1,227 @@
+/* Settings */
+.settings-grid {
+    column-count: 3;
+    column-gap: 1.5rem;
+    padding: 0.5rem;
+}
+
+/* Ensure each card doesn't break in middle */
+.settings-card {
+    break-inside: avoid;
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+.input-group-addon {
+  cursor: pointer;
+  background-color: var(--surface-color);
+  color: var(--ceoitbox-dark-color);
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: space-evenly;
+}
+
+.checkbox-child {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    justify-content: space-between;
+    border: 1px solid var(--ceoitbox-dark-color);
+    border-radius: 4px;
+    padding: 0.25rem;
+}
+
+.checkbox-child:hover {
+    background-color: var(--ceoitbox-transparent-color);
+}
+
+.checkbox-child label {
+    margin: 0;
+}
+
+input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    cursor: pointer;
+    accent-color: var(--ceoitbox-dark-color);
+}
+
+.checkbox-child.checked {
+    background-color: var(--ceoitbox-transparent-color);
+}
+
+.collapsible-header {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 1rem 0;
+}
+
+.toggle-icon {
+    color: var(--ceoitbox-dark-color);
+    font-weight: bold;
+    font-size: 1.15rem;
+    transform: rotate(0deg);
+    margin-right: 10px;
+    transition: transform 0.3s ease;
+}
+
+.card-view {
+    background-color: var(--surface-color);
+    border-radius: var(--border-radius);
+    padding: 1rem 1.5rem;
+    box-shadow: 0 0 6px 0px var(--ceoitbox-light-color);
+}
+
+.card-view h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--ceoitbox-dark-color);
+    margin-bottom: 1rem;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.checkbox-group label {
+    text-align: center;
+}
+
+.dual-field {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+    width: '40px';
+    height: '44px';
+    border: 'none';
+    padding: 0;
+    cursor: 'pointer';
+    border-color: var(--border-color);
+    border-radius: '50%';
+    transform: 'rotate(45deg)';
+}
+
+@media (max-width: 1600px) and (min-width: 1400px) {
+    .checkbox-group,
+    .dual-field {
+        display: grid;
+        width: 100%;
+        grid-template-columns: repeat(1, 2fr);
+        justify-content: unset;
+    }
+}
+
+@media (max-width: 1400px) {
+    .settings-grid {
+        column-count: 2;
+    }
+}
+
+@media (max-width: 1200px) {
+    .checkbox-group,
+    .dual-field {
+        display: grid;
+        width: 100%;
+        grid-template-columns: repeat(1, 2fr);
+        justify-content: unset;
+    }
+}
+
+@media (max-width: 975px) {
+    .settings-grid {
+        column-count: 1;
+    }
+}
+
+.select-control {
+    border-bottom: 1px dashed var(--ceoitbox-light-color);
+    border-right: 1px dashed var(--ceoitbox-light-color);
+    padding: 0.25rem;
+    text-align: center;
+    color: var(--ceoitbox-dark-color);
+    white-space: nowrap;
+}
+
+.select-control:last-child {
+    border-right: none;
+}
+
+select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--ceoitbox-dark-color);
+}
+
+/* arrow */
+select::-ms-expand {
+    display: none;
+}
+
+/* options */
+.option-td-control {
+    background-color: var(--surface-color);
+    font-size: 0.875rem;
+    border-bottom: 1px dashed var(--border-color);
+    border-right: 1px dashed var(--ceoitbox-light-color);
+    text-align: center;
+}
+
+.option-td-control:last-child {
+    border-right: none;
+}
+
+.option-control {
+    background-color: var(--surface-color);
+    border-bottom: 1px dashed var(--border-color);
+    border-right: 1px dashed var(--ceoitbox-light-color);
+    text-align: center;
+    color: var(--ceoitbox-dark-color);
+}
+
+.permission-table tbody tr:last-child td {
+    border-bottom: 1px dashed var(--ceoitbox-light-color);
+}
+
+.page-permission-editor {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.permission-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 1rem;
+    text-align: 'left';
+}
+
+.option-custom {
+    display: flex;
+    align-items: center;
+    padding: 0.4rem 0.6rem;
+    color: var(--ceoitbox-dark-color);
+}
+
+.option-custom:hover {
+    background-color: var(--ceoitbox-dark-color);
+    color: var(--surface-color);
+}
+
+@media (max-width: 968px) {
+    .card-view {
+        padding: 0.75rem;
+    }
+}

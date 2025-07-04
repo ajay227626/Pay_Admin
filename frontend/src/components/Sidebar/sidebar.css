@@ -1,0 +1,117 @@
+/* Sidebar */
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--sidebar-color);
+    border-right: 1px solid var(--ceoitbox-light-color);
+    position: fixed;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+.sidebar.active {
+    transform: translateX(0);
+    transition: transform 0.5s ease-out;
+}
+
+.sidebar.collapsed {
+    transform: translateX(-75%);
+}
+
+.sidebar.collapsed .sidebar-header {
+    justify-content: flex-end;
+    padding: 0.75rem 1.5rem;
+}
+
+.sidebar.collapsed nav-item i {
+    transform: translateX(-20px);
+}
+
+/* .sidebar.collapsed .main-content {
+    margin-left: 75px;
+} */
+
+.sidebar.collapsed .nav-item {
+    justify-content: flex-end;
+    padding: 0.75rem 0.5rem;
+}
+
+.sidebar.collapsed h2, .sidebar.collapsed .nav-item span {
+    display: none;
+}
+
+.sidebar-header {
+    padding: 0 2rem;
+    background-color: var(--ceoitbox-light-color);
+    border-bottom: 1px solid var(--ceoitbox-light-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-height);
+}
+
+.sidebar-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--ceoitbox-dark-color);
+}
+
+.sidebar-header h2 i {
+    margin-right: 0.5rem;
+}
+
+.sidebar-toggle {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: var(--ceoitbox-dark-color);
+    cursor: pointer;
+}
+
+.sidebar-toggle:focus {
+    outline: none;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    color: var(--ceoitbox-dark-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+    margin: 0 0 0.25rem 0.25rem;
+}
+
+.nav-item:hover {
+    background-color: var(--ceoitbox-transparent-color);
+    color: var(--ceoitbox-dark-color);
+    border-left-color: var(--ceoitbox-dark-color);
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.nav-item.active {
+    background-color: var(--ceoitbox-transparent-color);
+    color: var(--ceoitbox-dark-color);
+    border-left-color: var(--ceoitbox-dark-color);
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.nav-item i {
+    width: 20px;
+    margin-right: 0.75rem;
+    font-size: 1rem;
+}
+
+.nav-item span {
+    font-weight: 500;
+}
+

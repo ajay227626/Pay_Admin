@@ -1,0 +1,45 @@
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  animation: slideIn 0.4s ease-out;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  background-color: var(--background-color);
+  border-left: 4px solid var(--text-primary);
+  color: var(--text-primary);
+}
+
+.notification.positive {
+  border-left: 4px solid var(--ceoitbox-dark-color);
+  color: var(--ceoitbox-dark-color);
+  background-color: var(--background-color);
+}
+
+.notification.negative {
+  background-color: var(--background-color);
+  border-left: 4px solid var(--danger-color);
+  color: var(--danger-color);
+}
+
+.notification-icon {
+  font-size: 1.2rem;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0%);
+  }
+}
