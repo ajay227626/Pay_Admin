@@ -1,5 +1,5 @@
 import React from "react";
-import "./Notification.css";
+import "./notification.css";
 
 const Notification = ({ visible, message, type }) => {
   if (!visible) return null;

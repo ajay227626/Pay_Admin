@@ -1,4 +1,4 @@
-import './Templates.css';
+import './templates.css';
 import React, { useState, useEffect } from "react";
 import Template_Page from './Template_Page';
 import '../../../App';

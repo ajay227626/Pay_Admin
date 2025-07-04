@@ -1,4 +1,4 @@
-import "./Userlist.css";
+import "./userlist.css";
 import React, { use, useEffect, useState } from "react";
 import { useNotification, useUserLists, useModal, generateRandomPassword } from "../../SettingsProvider/SettingsProvider";
 import { set } from "mongoose";

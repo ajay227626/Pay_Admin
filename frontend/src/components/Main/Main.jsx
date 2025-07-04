@@ -1,6 +1,6 @@
 // C:\Users\CBX\Desktop\New Journey\Payment-app\src\components\Main\Main.jsx
 import React from "react";
-import './Main.css';
+import './main.css';
 import Dashboard from "./Dashboard/Dashboard";
 import Payments from "./Payments/Payments";
 import PDFLayouts from "./PDF_Layouts/PDF_Layouts";

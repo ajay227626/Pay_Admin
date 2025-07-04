@@ -1,6 +1,6 @@
 // C:\Users\CBX\Desktop\New Journey\Payment-app\src\components\Main\Customers\Customers.jsx
 import React, { use, useEffect, useState } from "react";
-import "./Customers.css";
+import "./customers.css";
 import { useNotification, useCustomers, useModal } from "../../SettingsProvider/SettingsProvider";
 import { set } from "mongoose";
 import axios from "axios";

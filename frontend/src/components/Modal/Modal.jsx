@@ -1,5 +1,5 @@
 import React from 'react';
-import './Modal.css';
+import './modal.css';
 import '../SettingsProvider/SettingsProvider';
 import { useCustomers, useSettings, useUserLists } from '../SettingsProvider/SettingsProvider';
 

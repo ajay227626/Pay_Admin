@@ -1,5 +1,5 @@
 import React from "react";
-import './Signatures.css';
+import './signatures.css';
 import { useNotification } from "../../SettingsProvider/SettingsProvider";
 
 function Signatures({ status }) {

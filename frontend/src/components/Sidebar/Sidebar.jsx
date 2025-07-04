@@ -1,6 +1,6 @@
 // C:\Users\CBX\Desktop\New Journey\Payment-app\src\components\Sidebar\Sidebar.jsx
 import React, { useEffect } from 'react';
-import './Sidebar.css';
+import './sidebar.css';
 import { usePages } from '../SettingsProvider/SettingsProvider';
 
 function showHideSidebar() {

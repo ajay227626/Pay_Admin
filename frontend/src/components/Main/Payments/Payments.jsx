@@ -1,4 +1,4 @@
-import './Payments.css';
+import './payments.css';
 import React from 'react';
 import { useNotification } from "../../SettingsProvider/SettingsProvider";
 

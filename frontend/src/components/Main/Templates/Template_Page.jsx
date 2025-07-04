@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import './Template_Page.css';
+import './template_page.css';
 import EmailEditor from 'react-email-editor';
 import '../../../index.css';
 import '../Settings/Settings';

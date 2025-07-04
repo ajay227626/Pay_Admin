@@ -1,5 +1,5 @@
 import React from "react";
-import './PDF_Layouts.css';
+import './pdf_layouts.css';
 import { useNotification } from "../../SettingsProvider/SettingsProvider";
 
 function PDFLayouts({ status }) {

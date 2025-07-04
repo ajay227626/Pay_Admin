@@ -1,5 +1,5 @@
 import react from 'react';
-import './Dashboard.css';
+import './dashboard.css';
 
 function Dashboard({ status }) {
     return (
