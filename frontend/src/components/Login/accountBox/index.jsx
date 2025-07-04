@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { LoginForm } from './loginForm';
 import { SignupForm } from './signupForm';
 import { SettingsContext } from '../../SettingsProvider/SettingsProvider';
-import './accountBox.css';
+import './accountbox.css';
 
 export default function WelcomeBox({ userRole }) {
     const [isExpanded, setExpanded] = useState(false);
