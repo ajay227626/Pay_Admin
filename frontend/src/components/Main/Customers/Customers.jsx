@@ -2,7 +2,7 @@
 import React, { use, useEffect, useState } from "react";
 import "./customers.css";
 import { useNotification, useCustomers, useModal } from "../../SettingsProvider/SettingsProvider";
-import { set } from "mongoose";
+
 import axios from "axios";
 
 function CustomersList({ customerData, setAllCheckboxSelected, switchTab, setCustomerID }) {

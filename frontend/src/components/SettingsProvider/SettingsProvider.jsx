@@ -3,7 +3,6 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from "axios";
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
-// import { set } from 'mongoose';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 // const fp = await FingerprintJS.load();

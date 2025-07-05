@@ -2,7 +2,7 @@
 import React from "react";
 import './userprofile.css'
 import { useModal } from "../SettingsProvider/SettingsProvider"
-import { set } from "mongoose";
+
 
 const EditableField = ({ label, value, onChange, isEditing, setIsEditing }) => {
     const type = label === 'Email' ? "email" : label === 'Phone' ? "tel" : label.includes('Password') ? "password" : "text";
