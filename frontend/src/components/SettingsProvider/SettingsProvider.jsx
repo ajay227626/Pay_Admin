@@ -3,7 +3,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from "axios";
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
-import { set } from 'mongoose';
+// import { set } from 'mongoose';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 // const fp = await FingerprintJS.load();
@@ -16,7 +16,7 @@ export const getFingerprint = async () => {
     return result.visitorId; // This is a unique device/browser ID
 };
 
-const hostUrl = `http://localhost:5000`;
+const hostUrl = import.meta.env.VITE_APP_API_URL || `http://localhost:5000`;
 
 // Create a custom hook for easier access
 export const useSettings = () => useContext(SettingsContext);
