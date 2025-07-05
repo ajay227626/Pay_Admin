@@ -1,7 +1,8 @@
 {
-  "name": "payment-app",
+  "name": "payment-app-frontend",
   "private": true,
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -15,18 +16,8 @@
     "@emotion/styled": "^11.14.0",
     "@fingerprintjs/fingerprintjs": "^4.6.2",
     "axios": "^1.10.0",
-    "bcryptjs": "^3.0.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.5.0",
-    "express": "^5.1.0",
-    "express-rate-limit": "^7.5.0",
     "framer-motion": "^12.18.1",
-    "geoip-lite": "^1.4.2",
-    "getmac": "^6.6.0",
-    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.516.0",
-    "mongodb": "^6.17.0",
-    "mongoose": "^8.16.0",
     "papaparse": "^5.5.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -34,7 +25,6 @@
     "react-router-dom": "^7.6.3",
     "react-select": "^5.10.1",
     "styled-components": "^6.1.19",
-    "ua-parser-js": "^2.0.4",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
@@ -48,9 +38,14 @@
     "globals": "^16.0.0",
     "vite": "^6.3.5"
   },
-  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
-  "main": "eslint.config.js",
-  "keywords": [],
-  "author": "",
+  "description": "Frontend for Pay Admin application, built with React and Vite.",
+  "main": "src/main.jsx",
+  "keywords": [
+    "react",
+    "vite",
+    "frontend",
+    "payment-app"
+  ],
+  "author": "Your Name/Company",
   "license": "ISC"
 }
