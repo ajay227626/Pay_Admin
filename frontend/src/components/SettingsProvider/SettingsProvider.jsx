@@ -12,7 +12,7 @@ fpPromise.then(fp => fp.get()).then(result => {
 }).catch(error => {
     console.error('Error obtaining fingerprint:', error);
 });
-const hostUrl = import.meta.env.VITE_APP_API_URL || `http://localhost:5000`;
+const hostUrl = 'https://pay-admin.onrender.com'; // process.env.REACT_APP_API || `http://localhost:5000`;
 
 // Create a custom hook for easier access
 export const useSettings = () => useContext(SettingsContext);
