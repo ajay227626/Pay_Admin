@@ -27,7 +27,7 @@ const path = require('path');
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
-const allowedOrigins = ['http://localhost:5173', 'https://pay-admin-z363.vercel.app/', 'https://pay-admin.onrender.com'];
+const allowedOrigins = ['http://localhost:5173', 'https://pay-admin-z363.vercel.app', 'https://pay-admin.onrender.com', 'https://pay-admin.vercel.app'];
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
