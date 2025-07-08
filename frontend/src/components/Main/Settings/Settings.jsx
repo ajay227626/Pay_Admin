@@ -1,6 +1,6 @@
 import React from "react";
 import Select, { components } from 'react-select';
-import './Settings.css';
+import './settings.css';
 import EyeIcon from "../../EyeAnimation/EyeAnimation";
 import { useSettings, generateIDFromSettings, useModal, useNextID, usePages } from '../../SettingsProvider/SettingsProvider';
 import { outline } from "@cloudinary/url-gen/actions/effect";
