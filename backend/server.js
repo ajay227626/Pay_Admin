@@ -29,14 +29,13 @@ app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 const allowedOrigins = ['http://localhost:5173', 'https://pay-admin-z363.vercel.app/', 'https://pay-admin.onrender.com'];
 app.use(cors({
-    origin:"*"
-//   origin: function (origin, callback) {
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       return callback(null, true);
-//     } else {
-//       return callback(new Error('Not allowed by CORS'), false);
-//     }
-//   }
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'), false);
+    }
+  }
 }));
 
 // --- Schemas ---
