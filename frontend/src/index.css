@@ -12,6 +12,10 @@
     --danger-color: '';
     --background-color: '';
     --surface-color: '';
+    --primary-text-color: #1e293b;
+    --secondary-text-color: #64748b;
+    --primary-btn-text-color: #1e293b;
+    --secondary-btn-text-color: #64748b;
     --text-primary: #1e293b;
     --text-secondary: #64748b;
     --text-white: #ffffff;
@@ -37,7 +41,7 @@
 body {
     font-family: var(--font-family, 'Poppins', sans-serif);
     background-color: var(--background-color);
-    color: var(--text-primary);
+    color: var(--primary-text-color);
     line-height: 1.6;
     overflow-x: hidden;
 }
@@ -82,16 +86,17 @@ body {
 
 .btn-primary {
     background-color: var(--ceoitbox-dark-color);
-    color: var(--text-white);
+    color: var(--primary-btn-text-color);
 }
 
-/* .btn-primary:hover:not(:disabled) {
+.btn-primary:hover:not(:disabled) {
+    color: var(--secondary-color);
     background-color: var(--ceoitbox-dark-color);
-} */
+}
 
 .btn-secondary {
     background-color: var(--ceoitbox-light-color);
-    color: var(--text-white);
+    color: var(--primary-btn-text-color);
     border-color: var(--border-color);
 }
 
@@ -277,7 +282,7 @@ body {
     }
     .property-group h4 {
         margin-bottom: 0.75rem;
-        color: var(--text-primary);
+        color: var(--primary-text-color);
         font-size: 0.875rem;
         text-transform: uppercase;
     }
@@ -407,7 +412,7 @@ body {
     }
     .property-group h4 {
         margin-bottom: 0.75rem;
-        color: var(--text-primary);
+        color: var(--primary-text-color);
         font-size: 0.875rem;
         text-transform: uppercase;
     }
@@ -706,7 +711,7 @@ body {
 
 .property-group h4 {
     margin-bottom: 0.5rem;
-    color: var(--text-primary);
+    color: var(--primary-text-color);
     font-size: 0.875rem;
     text-transform: uppercase;
 }

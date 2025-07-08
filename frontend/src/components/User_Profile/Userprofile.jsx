@@ -1,8 +1,8 @@
 // C:\Users\CBX\Desktop\New Journey\Payment-app\src\components\User_Profile\Userprofile.jsx
 import React from "react";
-import './userprofile.css'
+import './Userprofile.css'
 import { useModal } from "../SettingsProvider/SettingsProvider"
-
+import { set } from "mongoose";
 
 const EditableField = ({ label, value, onChange, isEditing, setIsEditing }) => {
     const type = label === 'Email' ? "email" : label === 'Phone' ? "tel" : label.includes('Password') ? "password" : "text";
@@ -16,9 +16,9 @@ const EditableField = ({ label, value, onChange, isEditing, setIsEditing }) => {
         <div className="edit-field">
             <label>{label}</label>
             <input type={type} value={value} name={name} readOnly={!isEditing} onChange={(e) => onChange(e.target.value)} placeholder={label} pattern={pattern} title={title} maxLength={length} autoCapitalize={capitalize} autoComplete={autocomplete} />
-            <span className={`edit-icon ${isEditing ? '' : 'active'}`} onClick={() => setIsEditing(!isEditing)}><i className="fas fa-pencil"></i></span>
-            <span className={`save-icon ${isEditing ? 'active' : ''}`} onClick={() => setIsEditing(false)}><i className="fas fa-save"></i></span>
-            <span className={`cross-icon ${isEditing ? 'active' : ''}`} onClick={() => setIsEditing(false)}><i className="fas fa-times"></i></span>
+            <span className={`edit-icon ${isEditing ? '' : 'active'}`} title="Edit" onClick={() => setIsEditing(!isEditing)}><i className="fas fa-pencil"></i></span>
+            <span className={`save-icon ${isEditing ? 'active' : ''}`} title="Save" onClick={() => setIsEditing(false)}><i className="fas fa-save"></i></span>
+            <span className={`cross-icon ${isEditing ? 'active' : ''}`} title="Cancel" onClick={() => setIsEditing(false)}><i className="fas fa-times"></i></span>
         </div>
     );
 };
@@ -65,7 +65,7 @@ function UserProfile({ status, role = "Minion" }) {
         );
     };
     return (
-        <section id="userProfile-page" className={`page ${status}`}>
+        <section id="userprofile-page" className={`page ${status}`}>
             <div className="profile-page">
                 <div className="container">
                     {/* Header */}

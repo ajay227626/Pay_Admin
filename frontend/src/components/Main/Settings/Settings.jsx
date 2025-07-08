@@ -1,6 +1,6 @@
 import React from "react";
 import Select, { components } from 'react-select';
-import './settings.css';
+import './Settings.css';
 import EyeIcon from "../../EyeAnimation/EyeAnimation";
 import { useSettings, generateIDFromSettings, useModal, useNextID, usePages } from '../../SettingsProvider/SettingsProvider';
 import { outline } from "@cloudinary/url-gen/actions/effect";
@@ -70,7 +70,9 @@ const customStyles = {
 
 const PagePermissionEditor = ({ initialPermissions = {}, onSave, pages }) => {
     const [ permissions, setPermissions ] = React.useState(initialPermissions);
+    // console.log(permissions);
     const handleChange = (pageId, role, selected) => {
+        console.log(pageId, role, selected);
         setPermissions(prev => ({ ...prev, [pageId]: { ...prev[pageId], [role]: selected.value, }, }));
     };
     const handleSave = () => {
@@ -384,7 +386,7 @@ function Settings({ status }) {
             'Accountant': 'edit',
             'View': 'view'
         },
-        'userLists-page': {
+        'userlists-page': {
             'Super Admin': 'edit',
             'Admin': 'edit',
             'Accountant': 'none',
@@ -408,7 +410,7 @@ function Settings({ status }) {
             'Accountant': 'none',
             'View': 'none'
         },
-        'userProfile-page': {
+        'userprofile-page': {
             'Super Admin': 'edit',
             'Admin': 'edit',
             'Accountant': 'view',
@@ -571,7 +573,11 @@ function Settings({ status }) {
                             <div className="collapsible-content">
                                 {[ 
                                     ['primaryColor', 'Primary Color'],
+                                    ['primaryTextColor', 'Primary Text Color'],
+                                    ['primaryBtnTextColor', 'Primary Button Text Color'],
                                     ['secondaryColor', 'Secondary Color'],
+                                    ['secondaryTextColor', 'Secondary Text Color'],
+                                    ['secondaryBtnTextColor', 'Secondary Button Text Color'],
                                     ['sidebarColor', 'Sidebar Color'],
                                     ['successColor', 'Success Color'],
                                     ['warningColor', 'Warning Color'],
