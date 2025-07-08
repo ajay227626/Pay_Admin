@@ -21,6 +21,7 @@ mongoose.connect(MONGO_URI)
 // ✅ Allowed origins for CORS
 const allowedOrigins = [
   'http://localhost:5173',
+  'http://localhost:5000',
   'https://pay-admin-z363.vercel.app',
   'https://pay-admin.vercel.app',
   'https://pay-admin.onrender.com'
@@ -40,18 +41,18 @@ const corsOptions = {
 
 // ✅ Apply CORS
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // handle preflight
+// app.options('*', cors()); // handle preflight
 
 // ✅ Middleware
 app.use(express.json());
 
 // ✅ Serve frontend static files (Vite/React build)
-app.use(express.static(path.join(__dirname, '../frontend/build')));
+app.use(express.static(path.join(__dirname, '../frontend', 'dist' )));
 
-// ✅ Optional: Fallback route for SPA (React Router support)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
-});
+// // ✅ Optional: Fallback route for SPA (React Router support)
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
+// });
 
 // --- Schemas ---
 const SettingsSchema = new mongoose.Schema({
@@ -444,7 +445,7 @@ app.get('/api/miscs', async (req, res) => {
 
 // React SPA fallback
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+    res.sendFile(path.join(__dirname, '../frontend', 'dist' , 'index.html'));
 });
 
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));

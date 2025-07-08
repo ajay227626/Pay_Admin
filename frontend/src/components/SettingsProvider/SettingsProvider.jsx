@@ -12,7 +12,15 @@ fpPromise.then(fp => fp.get()).then(result => {
 }).catch(error => {
     console.error('Error obtaining fingerprint:', error);
 });
-const hostUrl = 'https://pay-admin.onrender.com'; // process.env.REACT_APP_API || `http://localhost:5000`;
+// const hostUrl = 'https://pay-admin.onrender.com'; // process.env.REACT_APP_API || `http://localhost:5000`;
+let hostUrl = 'http://localhost:5000'; // process.env.REACT_APP_API || `http://localhost:5000`;
+if(window.location.origin.includes('localhost')){
+    hostUrl = 'http://localhost:5000';
+}else if(window.location.origin.includes('onrender.com')){
+    hostUrl = 'https://pay-admin.onrender.com';
+}else if(window.location.origin.includes('vercel.app')){
+    hostUrl = 'https://pay-admin.vercel.app';
+}
 
 // Create a custom hook for easier access
 export const useSettings = () => useContext(SettingsContext);
