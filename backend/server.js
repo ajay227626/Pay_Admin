@@ -6,37 +6,52 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const path = require('path');
+const UAParser = require('ua-parser-js');
+
 const app = express();
 const PORT = process.env.PORT || 5001;
 const MONGO_URI = process.env.MONGO_URI;
-const UAParser = require('ua-parser-js');
 
+// ✅ Connect to MongoDB
+mongoose.connect(MONGO_URI)
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// Connect to MongoDB
-mongoose.connect(MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-}).then(() => {
-    console.log("✅ Connected to MongoDB");
-}).catch((err) => {
-    console.error("❌ MongoDB connection error:", err);
-});
+// ✅ Allowed origins for CORS
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://pay-admin-z363.vercel.app',
+  'https://pay-admin.vercel.app',
+  'https://pay-admin.onrender.com'
+];
 
-const path = require('path');
-// Middleware
-app.use(express.json());
-app.use(express.static(path.join(__dirname, '../frontend/build')));
-
-const allowedOrigins = ['http://localhost:5173', 'https://pay-admin-z363.vercel.app', 'https://pay-admin.onrender.com', 'https://pay-admin.vercel.app'];
-app.use(cors({
+// ✅ CORS options
+const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
-      return callback(null, true);
+      callback(null, true);
     } else {
-      return callback(new Error('Not allowed by CORS'), false);
+      callback(new Error('Not allowed by CORS'));
     }
-  }
-}));
+  },
+  credentials: true
+};
+
+// ✅ Apply CORS
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // handle preflight
+
+// ✅ Middleware
+app.use(express.json());
+
+// ✅ Serve frontend static files (Vite/React build)
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+// ✅ Optional: Fallback route for SPA (React Router support)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+});
 
 // --- Schemas ---
 const SettingsSchema = new mongoose.Schema({
