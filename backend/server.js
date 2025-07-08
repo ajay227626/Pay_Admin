@@ -7,9 +7,10 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 const MONGO_URI = process.env.MONGO_URI;
 const UAParser = require('ua-parser-js');
+
 
 // Connect to MongoDB
 mongoose.connect(MONGO_URI, {
@@ -21,18 +22,21 @@ mongoose.connect(MONGO_URI, {
     console.error("❌ MongoDB connection error:", err);
 });
 
+const path = require('path');
 // Middleware
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 const allowedOrigins = ['http://localhost:5173'];
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      return callback(new Error('Not allowed by CORS'), false);
-    }
-  }
+    origin:"*"
+//   origin: function (origin, callback) {
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       return callback(null, true);
+//     } else {
+//       return callback(new Error('Not allowed by CORS'), false);
+//     }
+//   }
 }));
 
 // --- Schemas ---
@@ -422,6 +426,10 @@ app.get('/api/miscs', async (req, res) => {
         console.error(err);
         res.status(500).json({ message: 'Error fetching settings' });
     }
+});
+
+app.get("*", (req, res) => {
+    
 });
 
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
