@@ -1,6 +1,6 @@
 // C:\Users\CBX\Desktop\New Journey\Payment-app\src\components\User_Profile\Userprofile.jsx
 import React from "react";
-import './Userprofile.css'
+import './userprofile.css'
 import { useModal } from "../SettingsProvider/SettingsProvider"
 
 const EditableField = ({ label, value, onChange, isEditing, setIsEditing }) => {
