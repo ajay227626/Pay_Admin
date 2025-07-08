@@ -5,13 +5,8 @@ import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
-
-export const getFingerprint = async () => {
-    const fp = await FingerprintJS.load();
-    const result = await fp.get();
-    return result.visitorId; // This is a unique device/browser ID
-};
-
+const fpPromise = FingerprintJS.load();
+fpPromise.then(fp => fp.get()).then(result => { return result.visitorId; }).catch(error => { console.error('Error obtaining fingerprint:', error);});
 const hostUrl = import.meta.env.VITE_APP_API_URL || `http://localhost:5000`;
 
 // Create a custom hook for easier access
