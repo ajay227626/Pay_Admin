@@ -5,10 +5,6 @@ import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
-const fp = await FingerprintJS.load();
-const result = await fp.get();
-const fingerprint = result.visitorId;
-
 
 export const getFingerprint = async () => {
     const fp = await FingerprintJS.load();
