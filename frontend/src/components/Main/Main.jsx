@@ -1,6 +1,6 @@
 // C:\Users\CBX\Desktop\New Journey\Payment-app\src\components\Main\Main.jsx
 import React from "react";
-import './main.css';
+import './Main.css';
 import Dashboard from "./Dashboard/Dashboard";
 import Payments from "./Payments/Payments";
 import PDFLayouts from "./PDF_Layouts/PDF_Layouts";
@@ -28,6 +28,7 @@ function Main({ userRole }) {
     const openLogoutModal = () => {
         showModal(
             'LOGOUT WARNING',
+            '',
             () => <p>Are you sure you want to logout?</p>,
             closeModal,
             "Cancel",
@@ -82,12 +83,12 @@ function Main({ userRole }) {
 
         switch (currPage) {
             case 'dashboard': return <Dashboard status="active" />;
-            case 'payments': return <Payments status="active" />;
-            case 'pdf layouts': return <PDFLayouts status="active" />;
-            case 'email templates': return <Templates status="active" />;
-            case 'signatures': return <Signatures status="active" />;
-            case 'customers': return <Customers status="active" />;
-            case 'users': return <UserLists status="active" />;
+            case 'payments': return <Payments status="active" role={userRole} />;
+            case 'pdf layouts': return <PDFLayouts status="active" role={userRole} />;
+            case 'email templates': return <Templates status="active" role={userRole} />;
+            case 'signatures': return <Signatures status="active" role={userRole} />;
+            case 'customers': return <Customers status="active" role={userRole} />;
+            case 'users': return <UserLists status="active" role={userRole} />;
             case 'settings': return <Settings status="active" />;
             case 'user profile': return <UserProfile status="active" role={userRole} />;
             case 'email template':
@@ -98,6 +99,14 @@ function Main({ userRole }) {
     const image = "";
     const user = JSON.parse(localStorage.getItem('user'));
     const namePieces = `${user.fullName ? user.fullName[0] : 'U'}${user.fullName.split(' ')[1][0] ? user.fullName.split(' ')[1][0] : user.fullName[1]}`;
+    const searchExtender = () => {
+        const searchBtn = document.querySelector('.search-box i');
+        const searchInput = document.querySelector('#globalSearch');
+        searchInput.classList.toggle('active');
+        if (searchInput.classList.contains('active')) searchBtn.classList.add('active');
+        else searchBtn.classList.remove('active');
+        searchInput.focus();
+    }
 
     return (
         <main className="main-content">
@@ -110,7 +119,7 @@ function Main({ userRole }) {
                 </div>
                 <div className="header-right">
                     <div className="search-box">
-                        <i className="fas fa-search"></i>
+                        <i className="fas fa-search" onClick={searchExtender}></i>
                         <input type="text" placeholder="Search..." id="globalSearch" />
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>

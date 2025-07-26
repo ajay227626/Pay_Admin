@@ -23,7 +23,7 @@
 .page-title h2 {
     font-size: 1.875rem;
     font-weight: 700;
-    color: var(--text-primary);
+    color: var(--primary-text-color);
     margin-bottom: 0.5rem;
 }
 
@@ -59,6 +59,7 @@
     height: var(--header-height);
     background-color: var(--ceoitbox-light-color);
     border-bottom: 1px solid var(--ceoitbox-light-color);
+    box-shadow: 0 0 6px 0 var(--ceoitbox-dark-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -156,17 +157,6 @@
     transition: background-color 0.2s ease;
 }
 
-@media (max-width: 968px) {
-    .user-menu {
-        margin-left: 0.5rem;
-        background-color: var(--surface-color);
-    }
-
-    .page-content {
-        padding: 1.5rem 0.5rem 0.5rem;
-    }
-}
-
 .user-menu:hover {
     background-color: var(--background-color);
 }
@@ -180,7 +170,7 @@
 
 .user-name {
     font-weight: 500;
-    color: var(--text-primary);
+    color: var(--primary-text-color);
 }
 
 @media (max-width: 1024px) {
@@ -190,9 +180,9 @@
 }
 
 /* Forms */
-.form-group {
+/* .form-group {
     margin-bottom: 1rem;
-}
+} */
 
 .form-row {
     display: grid;
@@ -204,7 +194,7 @@
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
-    color: var(--text-primary);
+    color: var(--primary-text-color);
     font-size: 0.875rem;
 }
 
@@ -292,7 +282,7 @@
 .modal-header h3 {
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--primary-text-color);
 }
 
 .modal-close {
@@ -305,11 +295,11 @@
 }
 
 .modal-close:hover {
-    color: var(--text-primary);
+    color: var(--primary-btn-text-color);
 }
 
 .modal-body {
-    padding: 1.5rem;
+    padding: 1rem;
     border-radius: 7px;
     background-color: var(--background-color);
     box-shadow: 0 0 4px 0px var(--ceoitbox-dark-color);
@@ -424,7 +414,7 @@
 .user-menu-options-arrow {
     position: absolute;
     top: -10px;
-    right: 7px;
+    right: 9px;
     width: 0;
     height: 0;
     border-left: 8px solid transparent;
@@ -460,13 +450,48 @@
     .search-box i {
         color: var(--surface-color);
         padding: 0.5rem;
+        z-index: 1;
     }
 
     .search-box input {
         width: 100%;
         opacity: 0;
         visibility: hidden;
+        transform: scaleX(0);
+        transform-origin: left; /* ya right for opposite effect */
+        transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
         margin-left: 0.5rem;
+    }
+
+    .search-box i.active {
+        color: var(--ceoitbox-dark-color);
+    }
+
+    .search-box input.active {
+        opacity: 1;
+        visibility: visible;
+        transform: scaleX(1);
+        margin-left: 0.5rem;
+    }
+
+    .user-menu-options-arrow {
+        right: 5px;
+    }
+}
+
+@media (max-width: 968px) {
+    .user-menu {
+        margin-left: 0.5rem;
+        background-color: var(--surface-color);
+        padding: 0.25rem;
+    }
+
+    .page-content {
+        padding: 1.5rem 0.5rem 0.5rem;
+    }
+
+    .header {
+        height: 50px;
     }
 }
 

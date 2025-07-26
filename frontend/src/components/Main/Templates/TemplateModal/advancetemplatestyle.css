@@ -1,0 +1,43 @@
+.hover\:bg-cbx-light:hover {
+    background-color: var(--ceoitbox-light-color);
+}
+
+.text-cbx-dark {
+    color: var(--ceoitbox-dark-color);
+}
+
+.text-cbx-light {
+    color: var(--ceoitbox-light-color);
+}
+
+.hover\:text-cbx-light:hover {
+    color: var(--ceoitbox-light-color);
+}
+
+.hover\:text-cbx-dark:hover {
+    color: var(--ceoitbox-dark-color);
+}
+
+.bg-cbx-dark {
+    background-color: var(--ceoitbox-dark-color);
+}
+
+.bg-cbx-light {
+    background-color: var(--ceoitbox-light-color);
+}
+
+.bg-cbx-transparent {
+    background-color: var(--ceoitbox-transparent-color);
+}
+
+.hover\:bg-cbx-transparent:hover {
+    background-color: var(--ceoitbox-transparent-color);
+}
+
+.hover\:bg-cbx-dark:hover {
+    background-color: var(--ceoitbox-dark-color);
+}
+
+.hover\:bg-cbx-light:hover {
+    background-color: var(--ceoitbox-light-color);
+}

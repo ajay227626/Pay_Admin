@@ -1,0 +1,78 @@
+.choose-type {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.message-type {
+    flex: 1;
+    text-align: center;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    color: var(--ceoitbox-dark-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    gap: 0.5rem;
+}
+
+.message-type select {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    background-color: var(--ceoitbox-bg-color);
+    color: var(--ceoitbox-dark-color);
+}
+
+.message-type select:hover {
+    border-color: var(--ceoitbox-dark-color);
+    color: var(--ceoitbox-bg-color);
+}
+
+.message-header {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.message-body-parts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.toolbar button {
+  margin-right: 5px;
+  font-weight: bold;
+  padding: 8px 12px;
+  background-color: #f1f1f1;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.toolbar button:hover {
+  background-color: #e0e0e0;
+}
+
+.message-editor {
+  margin-top: 20px;
+}
+
+.message-editor h4 {
+  margin-bottom: 10px;
+}
+
+.message-editor .editable-area {
+  border: 1px solid #ccc;
+  padding: 10px;
+  min-height: 150px;
+  margin-top: 10px;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.mt-2 {
+  margin-top: 1rem;
+}

@@ -1,7 +1,7 @@
 // C:\Users\CBX\Desktop\New Journey\Payment-app\src\components\Sidebar\Sidebar.jsx
 import React, { useEffect } from 'react';
 import './sidebar.css';
-import { usePages } from '../SettingsProvider/SettingsProvider';
+import { usePages, useSettings } from '../SettingsProvider/SettingsProvider';
 
 function showHideSidebar() {
     const sidebar = document.getElementById('sidebar');
@@ -18,6 +18,7 @@ function showHideSidebar() {
 }
 
 function Sidebar({ userRole }) {
+    const { permissionSettings } = useSettings();
     const { pages, setPages, itemList } = usePages();
 
     // Update page title when pages change
@@ -48,20 +49,22 @@ function Sidebar({ userRole }) {
             
             <nav className="sidebar-nav">
                 <ul>
-                    {itemList.map((item, index) => (
-                        item.sidebar && (
-                            <li 
-                                key={index} 
+                    {itemList.map((item, index) => {
+                        const permission = permissionSettings[item.id]?.[userRole];
+                        if (!item.sidebar || permission === 'none') return null;
+                        return (
+                            <li
+                                key={index}
                                 className={`nav-item ${pages === item.name.toLowerCase() ? 'active' : ''}`}
-                                id={item.id} 
-                                data-page={item.name.toLowerCase()} 
+                                id={item.id}
+                                data-page={item.name.toLowerCase()}
                                 onClick={() => handleNavItemClick(item)}
                             >
                                 <i className={item.icon}></i>
                                 <span>{item.name}</span>
                             </li>
-                        )
-                    ))}
+                        );
+                    })}
                 </ul>
             </nav>
         </aside>

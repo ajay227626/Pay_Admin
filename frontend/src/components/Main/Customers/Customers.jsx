@@ -1,11 +1,11 @@
 // C:\Users\CBX\Desktop\New Journey\Payment-app\src\components\Main\Customers\Customers.jsx
 import React, { use, useEffect, useState } from "react";
 import "./customers.css";
-import { useNotification, useCustomers, useModal } from "../../SettingsProvider/SettingsProvider";
+import { useNotification, useCustomers, useModal, useSettings } from "../../SettingsProvider/SettingsProvider";
 
 import axios from "axios";
 
-function CustomersList({ customerData, setAllCheckboxSelected, switchTab, setCustomerID }) {
+function CustomersList({ customerData, setAllCheckboxSelected, switchTab, setCustomerID, isAdmin, permission }) {
     const [customerCount, setCustomerCount] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
@@ -220,6 +220,7 @@ function CustomersList({ customerData, setAllCheckboxSelected, switchTab, setCus
     const openViewModal = (customer) => {
         showModal(
             'View Customer Details',
+            '',
             viewCustomerModal(customer),
             closeModal,
             'Close'
@@ -227,6 +228,22 @@ function CustomersList({ customerData, setAllCheckboxSelected, switchTab, setCus
     }
 
     const editCustomerModal = (customer) => {
+        setCustomerName(customer.customerName);
+        setCustomerType(customer.customerType);
+        setCustomerGSTIN(customer.customerGSTIN);
+        setCustomerAddress(customer.customerAddress);
+        setCustomerPhone(customer.customerPhone);
+        setCustomerSecondaryPhone(customer.customerSecondaryPhone);
+        setCustomerEmail(customer.customerEmail);
+        setCustomerPAN(customer.customerPAN);
+        setCustomerWebsite(customer.customerWebsite);
+        setCustomerIndustry(customer.customerIndustry);
+        setCustomerCompanySize(customer.customerCompanySize);
+        setCustomerRevenue(customer.customerRevenue);
+        setCustomerOpeningBalance(customer.customerOpeningBalance);
+        setCustomerBalanceType(customer.customerBalanceType);
+        setCustomerCreditLimit(customer.customerCreditLimit);
+        setCustomerPaymentDays(customer.customerPaymentDays);
         return (
             <div className="customer-modal-container">
                 <div className="modal-tabs">
@@ -401,6 +418,7 @@ function CustomersList({ customerData, setAllCheckboxSelected, switchTab, setCus
         setCustomerPaymentDays(customer.customerPaymentDays);
         showModal(
             'Edit Customer Details',
+            '',
             editCustomerModal(customer),
             closeModal,
             'Close',
@@ -408,6 +426,7 @@ function CustomersList({ customerData, setAllCheckboxSelected, switchTab, setCus
             'Update'
         )
     }
+    const editAddAdminCheck = isAdmin || permission === 'add' || permission === 'edit';
     return (
         <>
             <div className="customer-list-container">
@@ -441,21 +460,21 @@ function CustomersList({ customerData, setAllCheckboxSelected, switchTab, setCus
                                     <tr className="customer-list-row" key={index}>
                                         <td className="field-data show"><input type="checkbox" /></td>
                                         <td className="field-data show">{index + 1}</td>
-                                        <td className="field-data show" style={ customer.customerName ? {} : { textAlign: 'center' }}>{customer.customerName || '-'}</td>
-                                        <td className="field-data show" style={ customer.customerType ? {} : { textAlign: 'center' }}>{customer.customerType || '-'}</td>
-                                        <td className="field-data show" style={ customer.customerGSTIN ? { textTransform: 'uppercase' } : { textAlign: 'center' }}>{customer.customerGSTIN || '-'}</td>
-                                        <td className="field-data show" style={ customer.customerAddress ? { textTransform: 'capitalize' } : { textAlign: 'center' }}>{customer.customerAddress || '-'}</td>
-                                        <td className="field-data show" style={ customer.customerPhone ? {} : { textAlign: 'center' }}>{customer.customerPhone || '-'}</td>
-                                        <td className="field-data show" style={ customer.customerSecondaryPhone ? {} : { textAlign: 'center' }}>{customer.customerSecondaryPhone || '-'}</td>
-                                        <td className="field-data show" style={ customer.customerEmail ? { textTransform: 'lowercase' } : { textAlign: 'center' }}>{customer.customerEmail || '-'}</td>
-                                        <td className="field-data show" style={ customer.customerPAN ? { textTransform: 'uppercase' } : { textAlign: 'center' }}>{customer.customerPAN || '-'}</td>
-                                        <td className="field-data show" style={{ textAlign: 'center', textTransform: 'lowercase' }}>{customer.customerWebsite || '-'}</td>
-                                        <td className="field-data show" style={{ textAlign: 'center' }}>{customer.customerIndustry || '-'}</td>
-                                        <td className="field-data show" style={{ textAlign: 'center' }}>{customer.customerCompanySize || '-'}</td>
-                                        <td className="field-data show" style={{ textAlign: 'center' }}>{customer.customerRevenue || '-'}</td>
-                                        <td className="field-data show" style={ customer.customerOpeningBalance ? { textAlign: 'right' } : { textAlign: 'center' }}>{customer.customerOpeningBalance || '-'}</td>
-                                        <td className="field-data show" style={{ textAlign: 'center' }}>{customer.customerCreditLimit || '-'}</td>
-                                        <td className="field-data show" style={{ textAlign: 'center' }}>{customer.customerPaymentDays || '-'}</td>
+                                        <td className="field-data show" style={ customer.customerName ? {} : { textAlign: 'center' }}>{ customer.customerName || '-' }</td>
+                                        <td className="field-data show" style={ customer.customerType ? {} : { textAlign: 'center' }}>{ customer.customerType || '-' }</td>
+                                        <td className="field-data show" style={ customer.customerGSTIN ? { textTransform: 'uppercase' } : { textAlign: 'center' }}>{ customer.customerGSTIN || '-' }</td>
+                                        <td className="field-data show" style={ customer.customerAddress ? { textTransform: 'capitalize' } : { textAlign: 'center' }}>{ customer.customerAddress || '-' }</td>
+                                        <td className="field-data show" style={{ textAlign: 'center' }}>{ customer.customerPhone ? ( editAddAdminCheck ? customer.customerPhone : <i className="fas fa-phone" style={{ color: 'var(--ceoitbox-dark-color)', cursor: 'pointer' }} color="var(--ceoitbox-dark-color)"></i> ) : '-' }</td>
+                                        <td className="field-data show" style={{ textAlign: 'center' }}>{ customer.customerSecondaryPhone ? ( editAddAdminCheck ? customer.customerSecondaryPhone || '-' : <i className="fas fa-phone" style={{ color: 'var(--ceoitbox-dark-color)', cursor: 'pointer' }} color="var(--ceoitbox-dark-color)"></i> ) : '-' }</td>
+                                        <td className="field-data show" style={ customer.customerEmail && editAddAdminCheck ? { textTransform: 'lowercase' } : { textAlign: 'center' }}>{ customer.customerEmail ? ( editAddAdminCheck ? customer.customerEmail : <i className="fas fa-envelope" style={{ color: 'var(--ceoitbox-dark-color)', cursor: 'pointer' }} color="var(--ceoitbox-dark-color)"></i> ) : '-' }</td>
+                                        <td className="field-data show" style={ customer.customerPAN ? { textTransform: 'uppercase' } : { textAlign: 'center' }}>{ customer.customerPAN || '-' }</td>
+                                        <td className="field-data show" style={{ textAlign: 'center', textTransform: 'lowercase' }}>{ customer.customerWebsite ? ( editAddAdminCheck ? customer.customerWebsite : <i className="fa-solid fa-arrow-up-right-from-square" style={{ color: 'var(--ceoitbox-dark-color)', cursor: 'pointer' }} color="var(--ceoitbox-dark-color)"></i> ) : '-' }</td>
+                                        <td className="field-data show" style={{ textAlign: 'center' }}>{ customer.customerIndustry || '-' }</td>
+                                        <td className="field-data show" style={{ textAlign: 'center' }}>{ customer.customerCompanySize || '-' }</td>
+                                        <td className="field-data show" style={{ textAlign: 'center' }}>{ customer.customerRevenue || '-' }</td>
+                                        <td className="field-data show" style={ customer.customerOpeningBalance ? { textAlign: 'right' } : { textAlign: 'center' }}>{ customer.customerOpeningBalance || '-' }</td>
+                                        <td className="field-data show" style={{ textAlign: 'center' }}>{ customer.customerCreditLimit || '-' }</td>
+                                        <td className="field-data show" style={{ textAlign: 'center' }}>{ customer.customerPaymentDays || '-' }</td>
                                         <td className="field-data show" style={{ textAlign: 'center', display: 'flex', gap: '5px', alignItems: 'center' }}>
                                             <button className="btn btn-primary" style={{ padding: '0.5rem', borderRadius: '50%'}} onClick={() => { openViewModal(customer) }}><i className="fas fa-eye"></i></button>
                                             <button className="btn btn-primary" style={{ padding: '0.5rem', borderRadius: '50%'}} onClick={() => { openEditModal(customer) }}><i className="fas fa-edit"></i></button>
@@ -526,15 +545,24 @@ function CustomersGrid({ customerData }) {
     );
 }
 
-function Customers({ status }) {
-    const [tableHeaders, setTableHeaders] = React.useState([]);
-    const [colData, setColData] = React.useState('');
-    const [currentView, setCurrentView] = React.useState('list');
-    const [searchTerm, setSearchTerm] = React.useState('');
-    const [uniqueValues, setUniqueValues] = React.useState([]);
-    const [allCheckboxSelected, setAllCheckboxSelected] = React.useState(false);
-    const [loading, setLoading] = useState(true);
+function Customers({ status, role = "Minion" }) {
+    const isAdmin = role === "Minion";
+    const { customerSetting, permissionSettings } = useSettings();
+    const permission = permissionSettings['customers-page']?.[role];
+    if (permission === 'none') return null;
+    const [ tableHeaders, setTableHeaders ] = React.useState([]);
+    const [ colData, setColData ] = React.useState('');
+    const [ currentView, setCurrentView ] = React.useState('list');
+    const [ searchTerm, setSearchTerm ] = React.useState('');
+    const [ uniqueValues, setUniqueValues ] = React.useState([]);
+    const [ allCheckboxSelected, setAllCheckboxSelected ] = React.useState(false);
+    const [ loading, setLoading ] = React.useState(true);
     const { showModal, closeModal } = useModal();
+    const [ customerTableHeaders, setCustomerTableHeaders ] = React.useState([]);
+    const [ visibleColumns, setVisibleColumns ] = React.useState(() => {
+        const saved = localStorage.getItem("customerColumnVisibilityList");
+        return saved ? JSON.parse(saved) : new Array(17).fill(true);
+    });
     const {
         customerName,
         setCustomerName,
@@ -582,7 +610,6 @@ function Customers({ status }) {
         setCustomerID,
         isLoaded
     } = useCustomers();
-
     const switchTab = (event, tabName) => {
         const tabContents = document.querySelectorAll('.tab-content');
         tabContents.forEach(content => content.classList.remove('active'));
@@ -591,7 +618,6 @@ function Customers({ status }) {
         document.getElementById(tabName).classList.add('active');
         event.target.classList.add('active');
     }
-
     const newCustomerModal = () => {
         return (
             <div className="customer-modal-container">
@@ -621,12 +647,7 @@ function Customers({ status }) {
                                 <label htmlFor="customerType">Type <span className="required">*</span></label>
                                 <select id="customerType" name="type" defaultValue='Selected Customer Type' onChange={(e) => { setCustomerType(e.target.value), handleCustomerEntry(e) }} required>
                                     <option value="">Select Customer Type</option>
-                                    <option value="Customer">Customer</option>
-                                    <option value="Vendor">Vendor</option>
-                                    <option value="Bank">Bank</option>
-                                    <option value="Cash">Cash</option>
-                                    <option value="Employee">Employee</option>
-                                    <option value="Other">Other</option>
+                                    {customerSetting.customerTypes.map((type, index) => ( <option key={index} value={type}>{type}</option> ))}
                                 </select>
                             </div>
                         </div>
@@ -750,6 +771,7 @@ function Customers({ status }) {
     const openCustomersModal = () => {
         showModal(
             'Add New Customer',
+            '',
             newCustomerModal(),
             closeModal,               // Cancel Button
             "Cancel",
@@ -833,6 +855,7 @@ function Customers({ status }) {
     const handleImport = () => {
         showModal(
             'Import Customers',
+            '',
             importCSVPromt(),
             closeModal,               // Cancel Button
             "Cancel",
@@ -858,6 +881,7 @@ function Customers({ status }) {
     const handleExport = () => {
         showModal(
             'Export Customers',
+            '',
             exportCSVPromt(),
             closeModal,               // Cancel Button
             "Cancel",
@@ -865,6 +889,65 @@ function Customers({ status }) {
             "Export Customer"
         );
     }
+    
+    useEffect(() => {
+        const headers = document.querySelectorAll('.field-header');
+        const headerNames = Array.from(headers).map(header => header.textContent);
+        setCustomerTableHeaders(headerNames);
+    }, []);
+    
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            const table = document.querySelector('.customer-list');
+            if (!table) return;
+            const headerRow = table.querySelector('thead tr');
+            const rows = table.querySelectorAll('tbody tr');
+            visibleColumns.forEach((visible, index) => {
+                const colIndex = index + 1;
+                const headerCell = headerRow?.children[colIndex];
+                if (headerCell) headerCell.classList.toggle('show', visible);
+                rows.forEach(row => {
+                    const cell = row.children[colIndex];
+                    if (cell) cell.classList.toggle('show', visible);
+                });
+            });
+        }, 1);
+        return () => clearTimeout(timer);
+    }, [visibleColumns, filteredData]);
+    
+    const handleColumnSelect = (e) => {
+        e.preventDefault();
+        const target = e.target.closest('.selectable-option');
+        if (!target) return;
+        const columnIndex = Array.from(target.parentNode.children).indexOf(target);
+        const adjustedIndex = columnIndex + 1;
+        const table = document.querySelector('.customer-list');
+        if (!table) return;
+        const headerRow = table.querySelector('thead tr');
+        const headerCell = headerRow?.children[adjustedIndex];
+        if (!headerCell) return;
+        headerCell.classList.toggle('show');
+        const rows = table.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const cell = row.children[adjustedIndex];
+            if (cell) cell.classList.toggle('show');
+        });
+        target.classList.toggle('selected');
+        if (!target.classList.contains('selected')) {
+            if (!target.querySelector('span')) {
+                <span className="cross">
+                    <i className="fas fa-times" style={{ fontSize: '1rem', padding: '5px' }}></i>
+                </span>
+            }
+        } else {
+            const cross = target.querySelector('span');
+            if (cross) cross.remove();
+        }
+        const updatedVisibility = [...visibleColumns];
+        updatedVisibility[columnIndex] = !updatedVisibility[columnIndex];
+        setVisibleColumns(updatedVisibility);
+        localStorage.setItem('customerColumnVisibilityList', JSON.stringify(updatedVisibility));
+    };
 
     return (
         <section id="customers-page" className={`page ${status}`}>
@@ -873,21 +956,23 @@ function Customers({ status }) {
                     <h2>Customers</h2>
                     <p>Manage and track all customer records</p>
                 </div>
-                <div className="page-actions">
-                    <button className="btn btn-primary" id="importCustomersBtn" onClick={handleImport}>
-                        <i className="fas fa-upload"></i> Import
-                    </button>
-                    <button className="btn btn-primary" id="exportCustomersBtn" onClick={handleExport}>
-                        <i className="fas fa-download"></i> Export
-                    </button>
-                    <button className="btn btn-primary" id="newCustomerBtn" onClick={openCustomersModal}>
-                        <i className="fas fa-plus"></i> New Customer
-                    </button>
-                </div>
+                { (isAdmin || permission === 'add') && (
+                    <div className="page-actions">
+                        <button className="btn btn-primary" id="importCustomersBtn" onClick={handleImport}>
+                            <i className="fas fa-upload"></i> Import
+                        </button>
+                        <button className="btn btn-primary" id="exportCustomersBtn" onClick={handleExport}>
+                            <i className="fas fa-download"></i> Export
+                        </button>
+                        <button className="btn btn-primary" id="newCustomerBtn" onClick={openCustomersModal}>
+                            <i className="fas fa-plus"></i> New Customer
+                        </button>
+                    </div>
+                )}
             </div>
             <div className="page-filters">
                 <div className="search-bar">
-                    <input type="text" onInput={(e) => handleSearch(e.target.value)} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search..." />
+                    <input style={{ fontSize: '0.875rem', lineHeight: 'normal' }} type="text" onInput={(e) => handleSearch(e.target.value)} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search..." />
                 </div>
                 <div className="filter-group">
                     <select id="selectTableHeader" onChange={(e) => handleHeaderFIlter(e.target.value)} name="status">
@@ -906,7 +991,32 @@ function Customers({ status }) {
                     <button className="btn btn-primary" id="selectAllBtn" onClick={handleSelectAll} title={allCheckboxSelected ? 'Unselect All' : 'Select All'}>{allCheckboxSelected ? <i className="fas fa-square-xmark"></i> : <i className="fas fa-check-double"></i>}</button>
                 </div>
                 <div className="action-side">
-                    <button className="btn btn-primary" id="reloadData" style={{ padding: '0.5rem', borderRadius: '50%' }} onClick={() => {
+                    <div className="column-group">
+                        { currentView === 'list' && <button
+                            className="btn btn-primary"
+                            id="showColumnsBtn"
+                            style={{ borderRadius: '50%', padding: '0.5rem'}}
+                            onClick={() =>
+                                {
+                                    const columnOptions = document.querySelector('.column-options');
+                                    columnOptions.classList.toggle('open');
+                                }}
+                            title="Show/Hide Columns"><i className="fas fa-columns"></i></button>}
+                        <div className="column-options">
+                            <div className="selectable-options-arrow" />
+                            <div className="selectable-options" id="selectColumns">
+                                {customerTableHeaders.map((header, index) => (
+                                    <div key={index} className={`selectable-option ${!visibleColumns[index] ? 'selected' : ''}`} onClick={handleColumnSelect}>
+                                        {header}
+                                        {!visibleColumns[index] && (
+                                            <span className="cross"><i className="fas fa-times" style={{ fontSize: '1rem', padding: '5px' }}></i></span>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <button className="btn btn-primary" id="reloadData" style={{ padding: '0.5rem', borderRadius: '50%' }} on onClick={() => {
                         fetchCustomers();
                         handleReset();
                         showNotification("Customers reloaded", "positive");
@@ -928,6 +1038,8 @@ function Customers({ status }) {
                         setAllCheckboxSelected={setAllCheckboxSelected}
                         switchTab={switchTab}
                         setCustomerID={setCustomerID}
+                        isAdmin={isAdmin}
+                        permission={permission}
                     /> :
                     <CustomersGrid
                         customerData={filteredData || []}

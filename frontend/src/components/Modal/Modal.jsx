@@ -1,17 +1,19 @@
 import React from 'react';
 import './modal.css';
 import '../SettingsProvider/SettingsProvider';
-import { useCustomers, useSettings, useUserLists } from '../SettingsProvider/SettingsProvider';
+import { useCustomers, useSettings, useUserLists, useWAMessage, useEmailMessage } from '../SettingsProvider/SettingsProvider';
 
-const Modal = ({ isActive, modalTitle, content, onClose1, buttonName1 = 'Cancel', onClose2, buttonName2 }) => {
+const Modal = ({ isActive, modalTitle, innerWidth, content, onClose1, buttonName1 = 'Cancel', onClose2, buttonName2 }) => {
     const { handleCustomerEntry, handleImportCustomerCSV, handleExportCustomerCSV } = useCustomers();
     const { handleSaveSettings, handleResetSettings } = useSettings();
     const { handleUserListEntry, handleImportUserListCSV, handleExportUserListCSV } = useUserLists();
+    const { sendWAMessage } = useWAMessage();
+    const { sendEmailMessage } = useEmailMessage();
     if (!isActive) return null;
 
     return (
         <div className="modal-overlay" onClick={onClose1}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-content" style={{ maxWidth: innerWidth || '600px' }} onClick={(e) => e.stopPropagation()}>
                 <h2 className="modal-title">{modalTitle}</h2>
                 <button className="modal-close" onClick={onClose1}>×</button>
                 <div className="modal-body">
@@ -28,6 +30,8 @@ const Modal = ({ isActive, modalTitle, content, onClose1, buttonName1 = 'Cancel'
                             : onClose2 === 'newUserListSave' ? handleUserListEntry
                             : onClose2 === 'exportUserListSave' ? handleExportUserListCSV
                             : onClose2 === 'importUserListSave' ? handleImportUserListCSV
+                            : onClose2 === 'sendTestWAMessage' ? sendWAMessage
+                            : onClose2 === 'sendTestEmailMessage' ? sendEmailMessage
                             : onClose2
                         }>{buttonName2}</button>
                     )}

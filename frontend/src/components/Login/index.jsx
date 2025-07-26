@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { LoginForm } from './loginForm';
 import { SignupForm } from './signupForm';
-import { SettingsContext } from '../../SettingsProvider/SettingsProvider';
+import { SettingsContext } from '../SettingsProvider/SettingsProvider';
 import './accountbox.css';
 
 export default function WelcomeBox({ userRole }) {

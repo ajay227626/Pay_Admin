@@ -3,8 +3,8 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar/Sidebar';
 import Main from './components/Main/Main';
-import { SettingsProvider, SignupProvider, LoginProvider, NotificationProvider, ModalProvider, CustomersProvider, NextIDProvider, UserListsProvider, PagesProvider } from './components/SettingsProvider/SettingsProvider';
-import WelcomeBox from "./components/Login/accountBox/index";
+import { SettingsProvider, SignupProvider, LoginProvider, NotificationProvider, ModalProvider, CustomersProvider, NextIDProvider, UserListsProvider, PagesProvider, WAMessageProvider, EmailMessageProvider, EmailTemplatesProvider } from './components/SettingsProvider/SettingsProvider';
+import WelcomeBox from "./components/Login/index";
 import NotificationWrapper from './components/Notification/NotificationWrapper';
 import ModalWrapper from './components/Modal/ModalWrapper';
 
@@ -13,28 +13,34 @@ function App() {
         <Router>
             <NotificationProvider>
                 <ModalProvider>
-                    <SettingsProvider>
-                        <SignupProvider>
-                            <LoginProvider>
-                                    <NextIDProvider>
-                                        <CustomersProvider>
-                                            <PagesProvider>
-                                                <UserListsProvider>
-                                                    <Routes>
-                                                        <Route path="/admin/*" element={<AdminApp />} />
-                                                        <Route path="/user/*" element={<UserApp />} />
-                                                        <Route path="/" element={<Navigate to="/" replace />} />
-                                                        <Route path="*" element={<Navigate to="/" replace />} />
-                                                    </Routes>
-                                                    <ModalWrapper />
-                                                    <NotificationWrapper />
-                                                </UserListsProvider>
-                                            </PagesProvider>
-                                        </CustomersProvider>
-                                    </NextIDProvider>
-                            </LoginProvider>
-                        </SignupProvider>
-                    </SettingsProvider>
+                    <EmailTemplatesProvider>
+                        <WAMessageProvider>
+                            <EmailMessageProvider>
+                                <SettingsProvider>
+                                    <SignupProvider>
+                                        <LoginProvider>
+                                            <NextIDProvider>
+                                                <CustomersProvider>
+                                                    <PagesProvider>
+                                                        <UserListsProvider>
+                                                            <Routes>
+                                                                <Route path="/admin/*" element={<AdminApp />} />
+                                                                <Route path="/user/*" element={<UserApp />} />
+                                                                <Route path="/" element={<Navigate to="/" replace />} />
+                                                                <Route path="*" element={<Navigate to="/" replace />} />
+                                                            </Routes>
+                                                            <ModalWrapper />
+                                                            <NotificationWrapper />
+                                                        </UserListsProvider>
+                                                    </PagesProvider>
+                                                </CustomersProvider>
+                                            </NextIDProvider>
+                                        </LoginProvider>
+                                    </SignupProvider>
+                                </SettingsProvider>
+                            </EmailMessageProvider>
+                        </WAMessageProvider>
+                    </EmailTemplatesProvider>
                 </ModalProvider>
             </NotificationProvider>
         </Router>

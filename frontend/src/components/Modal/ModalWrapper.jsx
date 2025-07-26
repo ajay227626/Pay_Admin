@@ -12,6 +12,7 @@ const ModalWrapper = () => {
         <Modal
             isActive={modal.visible}
             modalTitle={modal.modalTitle}
+            innerWidth={modal.innerWidth}
             content={modal.content}
             onClose1={modal.onClose1 || closeModal}
             buttonName1={modal.buttonName1}

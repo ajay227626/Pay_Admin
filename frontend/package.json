@@ -12,11 +12,8 @@
   "dependencies": {
     "@cloudinary/react": "^1.14.3",
     "@cloudinary/url-gen": "^1.21.0",
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
     "@fingerprintjs/fingerprintjs": "^4.6.2",
     "axios": "^1.10.0",
-    "framer-motion": "^12.18.1",
     "lucide-react": "^0.516.0",
     "papaparse": "^5.5.3",
     "react": "^19.1.0",
@@ -24,18 +21,18 @@
     "react-email-editor": "^1.7.11",
     "react-router-dom": "^7.6.3",
     "react-select": "^5.10.1",
-    "styled-components": "^6.1.19",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
-    "@types/react": "^19.1.2",
-    "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9.25.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17",
     "vite": "^6.3.5"
   },
   "description": "Frontend for Pay Admin application, built with React and Vite.",

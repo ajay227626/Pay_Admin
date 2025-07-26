@@ -1,8 +1,11 @@
 import './payments.css';
 import React from 'react';
-import { useNotification } from "../../SettingsProvider/SettingsProvider";
+import { useNotification, useSettings } from "../../SettingsProvider/SettingsProvider";
 
-function Payments({ status }) {
+function Payments({ status, role = "Minion" }) {
+    const isAdmin = role === "Minion";
+    const { permissionSettings } = useSettings();
+    const permission = permissionSettings['payments-page']?.[role];
     const { 
         notification,
         setNotification,
@@ -21,38 +24,39 @@ function Payments({ status }) {
                     <h2>Advance Payments</h2>
                     <p>Manage and track all payment records</p>
                 </div>
-                
-                <div className="page-actions">
-                    <button className="btn btn-secondary" id="exportBtn">
-                        <i className="fas fa-download"></i> Export
-                    </button>
-                    <button className="btn btn-primary" id="addPaymentBtn" onClick={handleCLick}>
-                        <i className="fas fa-plus"></i> Add Payment
-                    </button>
-                </div>
+                {(isAdmin || permission === 'add') && (
+                    <div className="page-actions">
+                        <button className="btn btn-secondary" id="exportBtn">
+                            <i className="fas fa-download"></i> Export
+                        </button>
+                        <button className="btn btn-primary" id="addPaymentBtn" onClick={handleCLick}>
+                            <i className="fas fa-plus"></i> Add Payment
+                        </button>
+                    </div>
+                )}
             </div>
             
             <div className="filters-bar">
                 <div className="filter-group">
-                    <input type="text" placeholder="Search payments..." id="paymentSearch" className="search-input" />
+                    <input style={{ fontSize: '0.875rem', lineHeight: 'normal' }} type="text" placeholder="Search payments..." id="paymentSearch" className="search-input" />
                 </div>
-                
                 <div className="filter-group">
-                    <select id="statusFilter" className="filter-select">
-                        <option value="">All Status</option>
-                        <option value="pending">Pending</option>
-                        <option value="sent">Sent</option>
-                        <option value="signed">Signed</option>
-                    </select>
+                    <div className="filter-group">
+                        <select id="statusFilter" className="filter-select">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="sent">Sent</option>
+                            <option value="signed">Signed</option>
+                        </select>
+                    </div>
+                    <div className="filter-group">
+                        <input style={{ lineHeight: 'normal' }} type="date" id="dateFilter" className="filter-input" />
+                    </div>
+                    <button style={{
+                        lineHeight: 'normal' }} className="btn btn-secondary" id="clearFilters">
+                        <i className="fas fa-times"></i> Clear
+                    </button>
                 </div>
-                
-                <div className="filter-group">
-                    <input type="date" id="dateFilter" className="filter-input" />
-                </div>
-                
-                <button className="btn btn-secondary" id="clearFilters">
-                    <i className="fas fa-times"></i> Clear
-                </button>
             </div>
             
             <div className="table-container">

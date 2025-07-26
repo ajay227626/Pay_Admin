@@ -236,6 +236,8 @@ input:focus {
 }
 
 .line-text {
+    margin-top: 1rem;
+    text-align: center;
     font-size: 12px;
     color: rgba(200, 200, 200, 0.8);
     font-weight: 500;
@@ -256,3 +258,69 @@ input:focus {
     text-decoration: none;
     border-bottom: 1px dashed rgba(200, 200, 200, 0.8);
 }
+
+.input-group {
+    width: 100%;
+    position: relative;
+    margin-bottom: 0.5rem;
+}
+
+.input-group input {
+    width: 100%;
+    font-size: 14px;
+    border: 1px dashed var(--border-color);
+    border-radius: 4px;
+    z-index: 1;
+    background: transparent;
+}
+
+.input-group select {
+    width: 100%;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px dashed var(--border-color);
+    border-radius: 4px;
+    padding: 8px;
+    background: transparent;
+    color: var(--ceoitbox-dark-color);
+    opacity: 0.6;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--ceoitbox-light-color);
+    opacity: 1;
+}
+
+.input-group select:focus {
+    outline: none;
+    border-color: var(--ceoitbox-light-color);
+}
+
+.input-group input:focus::placeholder {
+    color: transparent;
+}
+
+.form-label {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    background: var(--surface-color);
+    padding: 0 4px;
+    font-size: 14px;
+    color: var(--ceoitbox-dark-color);
+    font-weight: 600;
+    opacity: 0.6;
+    pointer-events: none;
+    transition: 0.2s ease all;
+}
+
+.input-group input:focus + .form-label,
+.input-group input:not(:placeholder-shown) + .form-label {
+    top: -8px;
+    left: 6px;
+    font-size: 12px;
+    opacity: 1;
+    z-index: 2;
+}
+

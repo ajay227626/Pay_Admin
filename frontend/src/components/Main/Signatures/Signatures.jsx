@@ -1,8 +1,11 @@
 import React from "react";
 import './signatures.css';
-import { useNotification } from "../../SettingsProvider/SettingsProvider";
+import { useNotification, useSettings } from "../../SettingsProvider/SettingsProvider";
 
-function Signatures({ status }) {
+function Signatures({ status, role = "Minion" }) {
+    const isAdmin = role === "Minion";
+    const { userSetting, permissionSettings } = useSettings();
+    const permission = permissionSettings['signatures-page']?.[role];
     const { 
         notification,
         setNotification,
@@ -21,11 +24,13 @@ function Signatures({ status }) {
                     <h2>Digital Signatures</h2>
                     <p>Track and manage document signatures</p>
                 </div>
-                <div className="page-actions">
-                    <button className="btn btn-primary" id="newSignatureBtn" onClick={handleCLick}>
-                        <i className="fas fa-plus"></i> New Signature
-                    </button>
-                </div>
+                {(isAdmin || permission === 'add') && (
+                    <div className="page-actions">
+                        <button className="btn btn-primary" id="newSignatureBtn" onClick={handleCLick}>
+                            <i className="fas fa-plus"></i> New Signature
+                        </button>
+                    </div>
+                )}
             </div>
         </section>
     );

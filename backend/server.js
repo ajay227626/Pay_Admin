@@ -1,5 +1,3 @@
-// C:\Users\CBX\Desktop\New Journey\Payment-app\backend\server.js
-// UPDATED server.js
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -8,10 +6,26 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const UAParser = require('ua-parser-js');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+const nodemailer = require('nodemailer');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
 const MONGO_URI = process.env.MONGO_URI;
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+// ✅ DEBUG WRAPPER TO TRACE BAD ROUTES
+const originalUse = app.use;
+app.use = function (pathOrFn, ...handlers) {
+  console.log("🛠 Mounting route/middleware:", pathOrFn);
+  return originalUse.call(this, pathOrFn, ...handlers);
+};
+
+const originalGet = app.get;
+app.get = function (pathOrFn, ...handlers) {
+  console.log("🛠 GET route:", pathOrFn);
+  return originalGet.call(this, pathOrFn, ...handlers);
+};
 
 // ✅ Connect to MongoDB
 mongoose.connect(MONGO_URI)
@@ -41,13 +55,12 @@ const corsOptions = {
 
 // ✅ Apply CORS
 app.use(cors(corsOptions));
-// app.options('*', cors()); // handle preflight
 
 // ✅ Middleware
 app.use(express.json());
 
 // ✅ Serve frontend static files (Vite/React build)
-app.use(express.static(path.join(__dirname, '../frontend', 'dist' )));
+app.use(express.static(path.join(__dirname, '../frontend', 'dist')));
 
 // // ✅ Optional: Fallback route for SPA (React Router support)
 // app.get('*', (req, res) => {
@@ -59,7 +72,8 @@ const SettingsSchema = new mongoose.Schema({
     spreadsheetId: String,
     apiKey: String,
     aiAgent: String,
-    emailSettings: { senderEmail: String, senderName: String },
+    emailSettings: { senderEmail: String, appPassword: String, senderName: String },
+    waSettings: { waInstanseId: String, waApiKey: String, waFooter: String },
     themeSettings: { type: Object, default: {} },
     customerSetting: { type: Object, default: {} },
     userSetting: { type: Object, default: {} },
@@ -115,6 +129,7 @@ const CustomerSchema = new mongoose.Schema({
 
 const UserListSchema = new mongoose.Schema({
     userListParentId: { type: String, ref: 'UserList', default: null, required: true },
+    parentUser: { type: String, ref: 'User', default: 'Ajay Barman' },
     userListId: { type: String, ref: 'UserList', default: null },
     userListFirstName: { type: String, required: true },
     userListLastName: { type: String, required: true },
@@ -132,6 +147,7 @@ const UserListSchema = new mongoose.Schema({
     userListStatus: { type: String, default: 'Active' },
     userListLastLogin: { type: Date, default: null },
     userListOtpNeeded: { type: Boolean, default: false },
+    userListCreatedBy: { type: String, ref: 'User' },
     timestamp: { type: Date, default: Date.now },
 });
 
@@ -141,12 +157,15 @@ const Misc = new mongoose.Schema({
     nextUserId: { type: Number },
 });
 
+const EmailTemplatesSchema = new mongoose.Schema({});
+
 const LoginLog = mongoose.model('LoginLog', LoginLogSchema);
 const Settings = mongoose.model('Settings', SettingsSchema);
 const User = mongoose.model('User', UserSchema);
 const Customer = mongoose.model('Customer', CustomerSchema);
 const UserList = mongoose.model('UserList', UserListSchema);
 const MiscData = mongoose.model('Misc', Misc);
+const EmailTemplates = mongoose.model('EmailTemplates', EmailTemplatesSchema);
 
 const createLoginLog = async (logData) => {
     try {
@@ -233,23 +252,15 @@ app.post('/api/user/login', async (req, res) => {
         const lastSuccessfulLog = await LoginLog.findOne({ userId: user._id, status: 'success' }).sort({ timestamp: -1 });
         const lastLoginTimestamp = lastSuccessfulLog ? lastSuccessfulLog.timestamp : null;
         const lastLoginFormatted = lastLoginTimestamp
-            ? new Date(lastLoginTimestamp).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })
-            : new Date().toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true });
+            ? new Date(lastLoginTimestamp).toLocaleString('en-IN', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })
+            : new Date().toLocaleString('en-IN', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true });
 
         const lastLoginLogs = await LoginLog.find({ userId: user._id }).sort({ timestamp: -1 }).limit(5);
         const lastLoginLogsFormatted = lastLoginLogs.map(log => ({
             os: log.os,
             device: log.device,
             status: log.status,
-            timestamp: new Date(log.timestamp).toLocaleString('en-US', {
-                weekday: 'short',
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-                hour12: true,
-            }),
+            timestamp: new Date(log.timestamp).toLocaleString('en-IN', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true}),
             ipAddress: log.ipAddress,
             userAgent: log.userAgent,
         }));
@@ -265,6 +276,7 @@ app.post('/api/user/login', async (req, res) => {
                 userRole: 'Minion',
                 department: user.department,
                 mainUserId: user._id,
+                parentUser: 'Ajay Barman',
                 token,
                 lastLogin: lastLoginFormatted,
                 lastLoginLogs: lastLoginLogsFormatted
@@ -308,15 +320,15 @@ app.post('/api/userlists/login', async (req, res) => {
         const lastSuccessfulLog = await LoginLog.findOne({ userId: user._id, status: 'success' }).sort({ timestamp: -1 });
         const lastLoginTimestamp = lastSuccessfulLog ? lastSuccessfulLog.timestamp : null;
         const lastLoginFormatted = lastLoginTimestamp
-            ? new Date(lastLoginTimestamp).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })
-            : new Date().toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true });
+            ? new Date(lastLoginTimestamp).toLocaleString('en-IN', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })
+            : new Date().toLocaleString('en-IN', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true });
 
         const lastLoginLogs = await LoginLog.find({ userId: user._id }).sort({ timestamp: -1 }).limit(5);
         const lastLoginLogsFormatted = lastLoginLogs.map(log => ({
             os: log.os,
             device: log.device,
             status: log.status,
-            timestamp: new Date(log.timestamp).toLocaleString('en-US', {
+            timestamp: new Date(log.timestamp).toLocaleString('en-IN', {
                 weekday: 'short',
                 month: 'short',
                 day: 'numeric',
@@ -340,6 +352,7 @@ app.post('/api/userlists/login', async (req, res) => {
                 userRole: user.userListRole,
                 department: user.userListDepartment,
                 mainUserId: user.userListParentId,
+                parentUser: user.parentUser,
                 token,
                 lastLogin: lastLoginFormatted,
                 lastLoginLogs: lastLoginLogsFormatted
@@ -388,22 +401,23 @@ app.get('/api/customers', async (req, res) => {
 // Save UserLists
 app.post('/api/userlists/save', async (req, res) => {
     try {
-        const { email, _id } = req.body;
+        const { email, userListParentId } = req.body;
+        console.log('Received payload:', req.body);
         if (!email) {
-            return res.status(400).json({ success: false, message: "UserList email is required." });
+            return res.status(400).json({ success: false, message: "User List email is required." });
         }
-        const existingUserList = await UserList.findOne({ email });
+        const existingUserList = await UserList.findOne({ email, userListParentId });
         if (existingUserList) {
-            await UserList.updateOne({ email }, req.body);
-            res.json({ success: true, message: "UserList updated successfully." });
+            await UserList.updateOne({ email, userListParentId }, req.body);
+            res.json({ success: true, message: "User List updated successfully." });
         } else {
             const newUser = new UserList(req.body);
             await newUser.save();
-            res.status(201).json({ success: true, message: "UserList created successfully." });
+            res.status(201).json({ success: true, message: "User List created successfully." });
         }
     } catch (err) {
-        console.error("❌ Error in saving userList:", err);
-        res.status(500).json({ success: false, message: "Error saving userList", error: err.message });
+        console.error("❌ Error in saving user list:", err);
+        res.status(500).json({ success: false, message: "Error saving user list", error: err.message });
     }
 });
 
@@ -411,10 +425,15 @@ app.post('/api/userlists/save', async (req, res) => {
 app.get('/api/userlists', async (req, res) => {
     try {
         const userlists = await UserList.find();
-        res.json(userlists);
+        const userlistsFormatted = await Promise.all(userlists.map(async (userlist) => {
+            const lastSuccessfulLog = await LoginLog.findOne({ userId: userlist._id, status: 'success' }).sort({ timestamp: -1 });
+            const lastLoginFormatted = lastSuccessfulLog.timestamp || null;
+            return { ...userlist.toObject(), lastLogin: lastLoginFormatted };
+        }));
+        res.json(userlistsFormatted);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Error fetching userlists' });
+        res.status(500).json({ message: 'Error fetching userlists', error: err.message });
     }
 });
 
@@ -444,8 +463,128 @@ app.get('/api/miscs', async (req, res) => {
 });
 
 // React SPA fallback
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend', 'dist' , 'index.html'));
+app.get(/^\/(?!api).*/, (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend', 'dist', 'index.html'));
+});
+
+// --- Gemini API Routes (Keep these - they are in the correct place) ---
+app.post('/api/generate-content', async (req, res) => {
+    const { prompt, modelName = 'gemini-pro' } = req.body;
+    if (!prompt) return res.status(400).json({ error: 'Prompt is required.' });
+    try {
+        const model = genAI.getGenerativeModel({ model: modelName });
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+        res.json({ generatedText: text });
+    } catch (error) {
+        console.error('Error calling Gemini API:', error);
+        if (error.response && error.response.status) {
+            res.status(error.response.status).json({
+                error: 'Error from Gemini API',
+                details: error.response.statusText,
+                data: error.response.data // If available
+            });
+        } else {
+            res.status(500).json({ error: 'Internal server error', details: error.message });
+        }
+    }
+});
+
+app.post('/api/stream-content', async (req, res) => {
+    const { prompt, modelName = 'gemini-pro' } = req.body;
+    if (!prompt) return res.status(400).json({ error: 'Prompt is required.' });
+    try {
+        const model = genAI.getGenerativeModel({ model: modelName });
+        const result = await model.generateContentStream(prompt);
+        res.writeHead(200, {
+            'Content-Type': 'text/plain',
+            'Transfer-Encoding': 'chunked',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive'
+        });
+        for await (const chunk of result.stream) {
+            const chunkText = chunk.text();
+            res.write(chunkText);
+        }
+        res.end();
+    } catch (error) {
+        console.error('Error streaming from Gemini API:', error);
+        res.status(500).end('Error processing stream');
+    }
+});
+
+const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    auth: {
+        user: process.env.GMAIL_APP_EMAIL,
+        pass: process.env.GMAIL_APP_PASSWORD
+    },
+    tls: {
+        rejectUnauthorized: false
+    }
+});
+
+async function sendGenericEmail(toEmail, subject, htmlContent, senderName) {
+    console.log('Sender Name:', senderName);
+    const mailOptions = {
+        from: `${senderName || 'Your App Name'} <${process.env.GMAIL_APP_EMAIL}>`,
+        to: toEmail,
+        subject: subject,
+        html: htmlContent,
+    };
+    try {
+        let info = await transporter.sendMail(mailOptions);
+        console.log('Email sent: %s', info.messageId);
+        return { success: true, messageId: info.messageId };
+    } catch (error) {
+        console.error('Error sending email:', error);
+        console.error('Error details:', error.response);
+        return { success: false, error: error.message };
+    }
+}
+
+app.post('/api/send-email', async (req, res) => {
+    const { to, subject, html, senderName } = req.body;
+    if (!to || !subject || !html) return res.status(400).json({ success: false, message: 'Missing required email parameters (to, subject, html).' });
+    try {
+        const result = await sendGenericEmail(to, subject, html, senderName);
+        if (result.success) res.status(200).json({ success: true, message: 'Email sent successfully!', messageId: result.messageId });
+        else res.status(500).json({ success: false, message: 'Failed to send email.', error: result.error });
+    } catch (error) {
+        console.error("API route error sending email:", error);
+        res.status(500).json({ success: false, message: 'Internal server error while sending email.', error: error.message });
+    }
+});
+
+app.post('/api/emailtemplates/save', async (req, res) => {
+    try {
+        const { _id } = req.body;
+        const existingEmailTemplate = await EmailTemplates.findOne({ _id });
+        if (existingEmailTemplate) {
+            await EmailTemplates.updateOne({ _id }, req.body);
+            res.json({ success: true, message: "Email Template updated successfully." });
+        } else {
+            const emailTemplate = new EmailTemplates(req.body);
+            await emailTemplate.save();
+            res.status(201).json({ success: true, message: "Email Template created successfully." });
+        }
+    } catch (err) {
+        console.error("❌ Error in saving email template:", err.message);
+        res.status(500).json({ success: false, message: "Error saving email template", error: err.message });
+    }
+});
+
+app.get('/api/emailtemplates', async (req, res) => {
+    try {
+        const emailTemplates = await EmailTemplates.find();
+        res.json(emailTemplates);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error fetching email templates', error: err.message });
+    }
 });
 
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));

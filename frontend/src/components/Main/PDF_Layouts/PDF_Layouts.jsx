@@ -1,8 +1,11 @@
 import React from "react";
 import './pdf_layouts.css';
-import { useNotification } from "../../SettingsProvider/SettingsProvider";
+import { useNotification, useSettings } from "../../SettingsProvider/SettingsProvider";
 
-function PDFLayouts({ status }) {
+function PDFLayouts({ status, role = "Minion" }) {
+    const isAdmin = role === "Minion";
+    const { userSetting, permissionSettings } = useSettings();
+    const permission = permissionSettings['pdf-layouts-page']?.[role];
     const { 
         notification,
         setNotification,
@@ -21,12 +24,13 @@ function PDFLayouts({ status }) {
                     <h2>PDF Layouts</h2>
                     <p>Design and manage PDF document layouts</p>
                 </div>
-                
-                <div className="page-actions">
-                    <button className="btn btn-primary" id="newLayoutBtn" onClick={handleCLick}>
-                        <i className="fas fa-plus"></i> New Layout
-                    </button>
-                </div>
+                {(isAdmin || permission === 'add') && (
+                    <div className="page-actions">
+                        <button className="btn btn-primary" id="newLayoutBtn" onClick={handleCLick}>
+                            <i className="fas fa-plus"></i> New Layout
+                        </button>
+                    </div>
+                )}
             </div>
             
             <div className="layouts-grid" id="layoutsGrid">

@@ -14,24 +14,145 @@ fpPromise.then(fp => fp.get()).then(result => {
 });
 // const hostUrl = 'https://pay-admin.onrender.com'; // process.env.REACT_APP_API || `http://localhost:5000`;
 let hostUrl = 'http://localhost:5000'; // process.env.REACT_APP_API || `http://localhost:5000`;
-if(window.location.origin.includes('localhost')){
-    hostUrl = 'http://localhost:5000';
-}else if(window.location.origin.includes('onrender.com')){
-    hostUrl = 'https://pay-admin.onrender.com';
-}else if(window.location.origin.includes('vercel.app')){
-    hostUrl = 'https://pay-admin.vercel.app';
-}
+if (window.location.origin.includes('localhost')) hostUrl = 'http://localhost:5000';
+else if (window.location.origin.includes('onrender.com')) hostUrl = 'https://pay-admin.onrender.com';
+else if (window.location.origin.includes('vercel.app')) hostUrl = 'https://pay-admin.vercel.app';
+let waNewUrl = 'https://msg.ceoitbox.com/api/messages/send-message-unified';
+const DEFAULT_SETTINGS = {
+    spreadsheetId: '',
+    apiKey: '',
+    aiAgent: '',
+    emailSettings: {
+        senderEmail: '',
+        appPassword: '',
+        senderName: '',
+        resetOnLogout: false,
+        resetOnInactivity: false
+    },
+    waSettings: {
+        waInstanseId: '',
+        waApiKey: '',
+        waFooter: '',
+        resetOnLogout: false,
+        resetOnInactivity: false
+    },
+    customerSetting: {
+        customerIDPrefix: 'CUST',
+        customerIDSeparator: '-',
+        customerIDPadLength: 4,
+        customerYearFormat: 'YYYY',
+        customerIncludeFiscalYear: false,
+        customerIncludeYear: false,
+        customerIncludeDate: false,
+        customerIDSuffix: '',
+        customerTypes: ['Customer', 'Vendor', 'Bank', 'Cash', 'Employee', 'Other']
+    },
+    userSetting: {
+        userIDPrefix: 'USER',
+        userIDSeparator: '-',
+        userIDPadLength: 4,
+        userYearFormat: 'YYYY',
+        userIncludeFiscalYear: false,
+        userIncludeYear: false,
+        userIncludeDate: false,
+        userIDSuffix: '',
+        userRoles: ['Admin', 'Accountant', 'Viewer', 'Manual']
+    },
+    themeSettings: {
+        primaryColor: '#548827',
+        secondaryColor: '#bbd116',
+        sidebarColor: '#fdfc95',
+        successColor: '#10b981',
+        warningColor: '#f59e0b',
+        dangerColor: '#ef4444',
+        backgroundColor: '#f8fafc',
+        surfaceColor: '#ffffff',
+        borderColor: '#e2e8f0',
+        fontFamily: "'Poppins', sans-serif"
+    },
+    permissionSettings: {
+        'dashboard-page': {
+            'Admin': 'view',
+            'Accountant': 'view',
+            'Viewer': 'view',
+            'Manual': 'view'
+        },
+        'payments-page': {
+            'Admin': 'edit',
+            'Accountant': 'add',
+            'Viewer': 'none',
+            'Manual': 'none'
+        },
+        'templates-page': {
+            'Admin': 'edit',
+            'Accountant': 'none',
+            'Viewer': 'none',
+            'Manual': 'none'
+        },
+        'pdf-layouts-page': {
+            'Admin': 'edit',
+            'Accountant': 'none',
+            'Viewer': 'none',
+            'Manual': 'none'
+        },
+        'signatures-page': {
+            'Admin': 'view',
+            'Accountant': 'view',
+            'Viewer': 'none',
+            'Manual': 'none'
+        },
+        'customers-page': {
+            'Admin': 'edit',
+            'Accountant': 'edit',
+            'Viewer': 'view',
+            'Manual': 'none'
+        },
+        'userlists-page': {
+            'Admin': 'edit',
+            'Accountant': 'none',
+            'Viewer': 'none',
+            'Manual': 'none'
+        },
+        'settings-page': {
+            'Admin': 'edit',
+            'Accountant': 'none',
+            'Viewer': 'none',
+            'Manual': 'none'
+        },
+        'email-template-page': {
+            'Admin': 'add',
+            'Accountant': 'none',
+            'Viewer': 'none',
+            'Manual': 'none'
+        },
+        'pdf-template-page': {
+            'Admin': 'add',
+            'Accountant': 'none',
+            'Viewer': 'none',
+            'Manual': 'none'
+        },
+        'userprofile-page': {
+            'Admin': 'edit',
+            'Accountant': 'view',
+            'Viewer': 'view',
+            'Manual': 'view'
+        }
+    }
+};
 
 // Create a custom hook for easier access
 export const useSettings = () => useContext(SettingsContext);
 export const useSignup = () => useContext(SignupContext);
-export const useLogin =() => useContext(LoginContext);
+export const useLogin = () => useContext(LoginContext);
 export const useNotification = () => useContext(NotificationContext);
 export const useModal = () => useContext(ModalContext);
 export const useCustomers = () => useContext(CustomersContext);
 export const useUserLists = () => useContext(UserListsContext);
 export const useNextID = () => useContext(NextIDContext);
 export const usePages = () => useContext(PagesContext);
+export const useWAMessage = () => useContext(WAMessageContext);
+export const useEmailMessage = () => useContext(EmailMessageContext);
+export const useEmailTemplates = () => useContext(EmailTemplatesContext);
 
 // 2. Create the context
 export const SettingsContext = createContext();
@@ -43,19 +164,30 @@ export const CustomersContext = createContext();
 export const NextIDContext = createContext();
 export const UserListsContext = createContext();
 export const PagesContext = createContext();
+export const WAMessageContext = createContext();
+export const EmailMessageContext = createContext();
+export const EmailTemplatesContext = createContext();
 
 // 3. Create the provider component
 export const SettingsProvider = ({ children }) => {
     const { showNotification } = useNotification();
     const { showModal, closeModal } = useModal();
-    const [apiKey, setApiKey] = useState('');
-    const [aiAgent, setAiAgent] = useState('');
-    const [spreadsheetId, setSpreadsheetId] = useState('');
-    const [emailSettings, setEmailSettings] = useState({
+    const [ apiKey, setApiKey ] = useState('');
+    const [ aiAgent, setAiAgent ] = useState('');
+    const [ spreadsheetId, setSpreadsheetId ] = useState('');
+    const [ newCustomerType, setNewCustomerType ] = useState('');
+    const [ newUserRole, setNewUserRole ] = useState('');
+    const [ emailSettings, setEmailSettings ] = useState({
         senderEmail: '',
+        appPassword: '',
         senderName: ''
     });
-    const [customerSetting, setCustomerSetting] = useState({
+    const [ waSettings, setWaSettings ] = useState({
+        waInstanseId: '',
+        waApiKey: '',
+        waFooter: ''
+    })
+    const [ customerSetting, setCustomerSetting ] = useState({
         customerIDPrefix: '',
         customerIDSeparator: '-',
         customerIDPadLength: 4,
@@ -64,8 +196,16 @@ export const SettingsProvider = ({ children }) => {
         customerIncludeYear: false,
         customerIncludeDate: false,
         customerIDSuffix: '',
+        customerTypes: [
+            { label: 'customer', name: 'Customer' },
+            { label: 'vendor', name: 'Vendor' },
+            { label: 'bank', name: 'Bank' },
+            { label: 'cash', name: 'Cash' },
+            { label: 'employee', name: 'Employee' },
+            { label: 'other', name: 'Other' }
+        ]
     });
-    const [userSetting, setUserSetting] = useState({
+    const [ userSetting, setUserSetting ] = useState({
         userIDPrefix: '',
         userIDSeparator: '-',
         userIDPadLength: 4,
@@ -74,8 +214,14 @@ export const SettingsProvider = ({ children }) => {
         userIncludeYear: false,
         userIncludeDate: false,
         userIDSuffix: '',
+        userRoles: [
+            { label: 'admin', name: 'Admin' },
+            { label: 'accountant', name: 'Accountant' },
+            { label: 'viewer', name: 'Viewer' },
+            { label: 'manual', name: 'Manual' }
+        ]
     })
-    const [themeSettings, setThemeSettings] = useState({
+    const [ themeSettings, setThemeSettings ] = useState({
         primaryColor: '',
         secondaryColor: '',
         sidebarColor: '',
@@ -87,134 +233,15 @@ export const SettingsProvider = ({ children }) => {
         borderColor: '',
         fontFamily: ''
     });
-    const [ permissionSettings, setPermissionSettings ] = useState({
-        'dashboard-page': {
-            'Super Admin': 'edit',
-            'Admin': 'edit',
-            'Accountant': 'view',
-            'View': 'view'
-        },
-        'payments-page': {
-            'Super Admin': 'edit',
-            'Admin': 'edit',
-            'Accountant': 'edit',
-            'View': 'none'
-        },
-        'templates-page': {
-            'Super Admin': 'edit',
-            'Admin': 'view',
-            'Accountant': 'none',
-            'View': 'none'
-        },
-        'pdf-layouts-page': {
-            'Super Admin': 'edit',
-            'Admin': 'view',
-            'Accountant': 'none',
-            'View': 'none'
-        },
-        'signatures-page': {
-            'Super Admin': 'edit',
-            'Admin': 'view',
-            'Accountant': 'none',
-            'View': 'none'
-        },
-        'customers-page': {
-            'Super Admin': 'edit',
-            'Admin': 'edit',
-            'Accountant': 'edit',
-            'View': 'view'
-        },
-        'userlists-page': {
-            'Super Admin': 'edit',
-            'Admin': 'edit',
-            'Accountant': 'none',
-            'View': 'none'
-        },
-        'settings-page': {
-            'Super Admin': 'edit',
-            'Admin': 'view',
-            'Accountant': 'none',
-            'View': 'none'
-        },
-        'email-template-page': {
-            'Super Admin': 'edit',
-            'Admin': 'view',
-            'Accountant': 'none',
-            'View': 'none'
-        },
-        'pdf-template-page': {
-            'Super Admin': 'edit',
-            'Admin': 'view',
-            'Accountant': 'none',
-            'View': 'none'
-        },
-        'userprofile-page': {
-            'Super Admin': 'edit',
-            'Admin': 'edit',
-            'Accountant': 'view',
-            'View': 'view'
-        }
-    });
-    const [isLoaded, setIsLoaded] = useState(false);
-    const DEFAULT_SETTINGS = {
-        spreadsheetId: '',
-        apiKey: '',
-        aiAgent: '',
-        emailSettings: {
-            senderEmail: '',
-            senderName: '',
-            resetOnLogout: false,
-            resetOnInactivity: false
-        },
-        customerSetting: {
-            prefix: 'CUST',
-            startNumber: 1000
-        },
-        userSetting: {
-            prefix: 'USER',
-            startNumber: 500
-        },
-        themeSettings: {
-            primaryColor: '#548827',
-            secondaryColor: '#bbd116',
-            sidebarColor: '#fdfc95',
-            successColor: '#10b981',
-            warningColor: '#f59e0b',
-            dangerColor: '#ef4444',
-            backgroundColor: '#f8fafc',
-            surfaceColor: '#ffffff',
-            borderColor: '#e2e8f0',
-            fontFamily: "'Poppins', sans-serif"
-        }
-    };
+    const [ permissionSettings, setPermissionSettings ] = useState(DEFAULT_SETTINGS.permissionSettings);
+    const [ isLoaded, setIsLoaded ] = useState(false);
     const handleResetSettings = async (e) => {
-        const resetEmailSettings = {
-            senderEmail: '',
-            senderName: '',
-            resetOnLogout: false,
-            resetOnInactivity: false
-        };
-        const resetCustomerSetting = {
-            customerIDPrefix: '',
-            customerIDSeparator: '-',
-            customerIDPadLength: 4,
-            customerYearFormat: 'YYYY',
-            customerIncludeFiscalYear: false,
-            customerIncludeYear: false,
-            customerIncludeDate: false,
-            customerIDSuffix: '',
-        };
-        const resetUserSetting = {
-            userIDPrefix: '',
-            userIDSeparator: '-',
-            userIDPadLength: 4,
-            userYearFormat: 'YYYY',
-            userIncludeFiscalYear: false,
-            userIncludeYear: false,
-            userIncludeDate: false,
-            userIDSuffix: '',
-        };
+        const resetEmailSettings = DEFAULT_SETTINGS.emailSettings;
+        const resetWaSettings = DEFAULT_SETTINGS.waSettings;
+        const resetCustomerSetting = DEFAULT_SETTINGS.customerSetting;
+        const resetUserSetting = DEFAULT_SETTINGS.userSetting;
         const resetThemeSettings = DEFAULT_SETTINGS.themeSettings;
+        const resetPermissionSettings = DEFAULT_SETTINGS.permissionSettings;
         const resetPayload = {
             spreadsheetId: '',
             apiKey: '',
@@ -222,16 +249,19 @@ export const SettingsProvider = ({ children }) => {
             emailSettings: resetEmailSettings,
             customerSetting: resetCustomerSetting,
             userSetting: resetUserSetting,
-            themeSettings: resetThemeSettings
+            themeSettings: resetThemeSettings,
+            permissionSettings: resetPermissionSettings
         };
         // update states
         setSpreadsheetId('');
         setApiKey('');
         setAiAgent('');
         setEmailSettings(resetEmailSettings);
+        setWaSettings(resetWaSettings);
         setCustomerSetting(resetCustomerSetting);
         setUserSetting(resetUserSetting);
         setThemeSettings(resetThemeSettings);
+        setPermissionSettings(resetPermissionSettings);
         try {
             const res = await axios.post(`${hostUrl}/api/settings/save`, resetPayload);
             showNotification(res.data.success ? "Settings reset to default!" : "Failed to reset settings.", res.data.success ? "positive" : "negative");
@@ -313,11 +343,14 @@ export const SettingsProvider = ({ children }) => {
                     setSpreadsheetId(res.data.spreadsheetId || '');
                     setEmailSettings({
                         senderEmail: res.data.emailSettings?.senderEmail || '',
+                        appPassword: res.data.emailSettings?.appPassword || '',
                         senderName: res.data.emailSettings?.senderName || ''
                     });
+                    setWaSettings(res.data.waSettings || DEFAULT_SETTINGS.waSettings);
                     setCustomerSetting(res.data.customerSetting || DEFAULT_SETTINGS.customerSetting);
                     setUserSetting(res.data.userSetting || DEFAULT_SETTINGS.userSetting);
                     setThemeSettings(res.data.themeSettings || DEFAULT_SETTINGS.themeSettings);
+                    setPermissionSettings(res.data.permissionSettings || DEFAULT_PERMISSION);
                 }
             } catch (error) {
                 console.error("Error loading settings:", error);
@@ -329,7 +362,7 @@ export const SettingsProvider = ({ children }) => {
     }, []);
     const handleSaveSettings = async (e) => {
         e.preventDefault();
-        const payload = { spreadsheetId, apiKey, aiAgent, emailSettings, customerSetting, userSetting, themeSettings, permissionSettings };
+        const payload = { spreadsheetId, apiKey, aiAgent, emailSettings, waSettings, customerSetting, userSetting, themeSettings, permissionSettings };
         try {
             const res = await axios.post(`${hostUrl}/api/settings/save`, payload);
             showNotification(res.data.success ? "Settings saved successfully!" : "Failed to save settings.", res.data.success ? "positive" : "negative");
@@ -348,6 +381,8 @@ export const SettingsProvider = ({ children }) => {
         setSpreadsheetId,
         emailSettings,
         setEmailSettings,
+        waSettings,
+        setWaSettings,
         handleSaveSettings,
         customerSetting,
         setCustomerSetting,
@@ -357,6 +392,10 @@ export const SettingsProvider = ({ children }) => {
         setThemeSettings,
         permissionSettings,
         setPermissionSettings,
+        newCustomerType,
+        setNewCustomerType,
+        newUserRole,
+        setNewUserRole,
         handleResetSettings,
         isLoaded
     };
@@ -380,7 +419,7 @@ export const SignupProvider = ({ children }) => {
     const [status, setStatus] = useState('Inactive');
     const [otpNeeded, setOtpNeeded] = useState(true);
     const [isLoaded, setIsLoaded] = useState(false); // For loading state
-    
+
     const handleSignup = async (e) => {
         e.preventDefault();
         const field = !fullName ? 'full name' : !email ? 'email' : !password ? 'password' : !confirmPassword ? 'confirm password' : !phone ? 'phone' : !department ? 'department' : null;
@@ -518,49 +557,14 @@ export const NotificationProvider = ({ children }) => {
 }
 
 export const ModalProvider = ({ children }) => {
-    const [modal, setModal] = useState({
-        visible: false,
-        modalTitle: '',
-        content: '',
-        onClose1: null,
-        buttonName1: 'Cancel',
-        onClose2: null,
-        buttonName2: ''
-    });
-
-    const showModal = (
-        modalTitle,
-        content,
-        onClose1 = null,
-        buttonName1 = 'Cancel',
-        onClose2 = null,
-        buttonName2 = ''
-    ) => {
-        setModal({
-            visible: true,
-            modalTitle,
-            content,
-            onClose1,
-            buttonName1,
-            onClose2,
-            buttonName2
-        });
+    const [modal, setModal] = useState({ visible: false, modalTitle: '', content: '', onClose1: null, buttonName1: 'Cancel', onClose2: null, buttonName2: '' });
+    const showModal = ( modalTitle, innerWidth, content, onClose1 = null, buttonName1 = 'Cancel', onClose2 = null, buttonName2 = '' ) => {
+        setModal({ visible: true, modalTitle, innerWidth, content, onClose1, buttonName1, onClose2, buttonName2 });
     };
-
     const closeModal = () => {
-        setModal({
-            visible: false,
-            modalTitle: '',
-            content: '',
-            onClose1: null,
-            buttonName1: 'Cancel',
-            onClose2: null,
-            buttonName2: ''
-        });
+        setModal({ visible: false, modalTitle: '', innerWidth: '600px', content: '', onClose1: null, buttonName1: 'Cancel', onClose2: null, buttonName2: '' });
     };
-
     const value = { modal, showModal, closeModal };
-
     return (
         <ModalContext.Provider value={value}>
             {children}
@@ -899,7 +903,7 @@ export const NextIDProvider = ({ children }) => {
     useEffect(() => {
         const handleIDSave = async () => {
             // Initial render par save na karein, jab tak ID set na ho
-            if (nextCustomerID === 1 && nextUserID === 1) return; 
+            if (nextCustomerID === 1 && nextUserID === 1) return;
 
             try {
                 await axios.post(`${hostUrl}/api/miscs/save`, {
@@ -919,7 +923,7 @@ export const NextIDProvider = ({ children }) => {
         setNextUserID
     };
     return (
-        <NextIDContext.Provider value={ value }>
+        <NextIDContext.Provider value={value}>
             {children}
         </NextIDContext.Provider>
     );
@@ -962,8 +966,9 @@ export const UserListsProvider = ({ children }) => {
     const { showNotification } = useNotification();
     const userInfo = JSON.parse(localStorage.getItem('user'));
     const [ userListParentId, setUserListParentId ] = useState(userInfo?.mainUserId || '');
+    const [ parentUser, setParentUser ] = useState(userInfo?.fullName || '');
     const { closeModal } = useModal();
-    const [ isLoaded, setIsLoaded ] = useState(false); // For loading state
+    const [ isLoaded, setIsLoaded ] = useState(false);
     const [ userListID, setUserListID ] = useState('');
     const [ userListFirstName, setUserListFirstName ] = useState('');
     const [ userListLastName, setUserListLastName ] = useState('');
@@ -981,6 +986,7 @@ export const UserListsProvider = ({ children }) => {
     const [ userListStatus, setUserListStatus ] = useState('Active');
     const [ userListLastLogin, setUserListLastLogin ] = useState(null);
     const [ userListOtpNeeded, setUserListOtpNeeded ] = useState(false);
+    const [ userListCreatedBy, setUserListCreatedBy ] = useState('');
     const [ downloadType, setDownloadType ] = useState('csv');
     const [ fileName, setFileName ] = useState('Users_List');
     const [ userLists, setUserLists ] = useState([]);
@@ -988,6 +994,7 @@ export const UserListsProvider = ({ children }) => {
     const { nextUserID, setNextUserID } = useNextID();
     const { userSetting } = useSettings();
     const [ userListCount, setUserListCount ] = useState(0);
+    const [ type, setType ] = useState('add');
 
     const fetchUserLists = async () => {
         try {
@@ -1035,13 +1042,16 @@ export const UserListsProvider = ({ children }) => {
 
     const handleUserListEntry = async (e) => {
         e.preventDefault();
-        if (!userListFirstName) return showNotification('Please fill First Name.', 'negative');
-        if (!userListLastName) return showNotification('Please fill Last Name.', 'negative');
-        if (!userListRole) return showNotification('Please fill User Role.', 'negative');
-        if (!userListPhone) return showNotification('Please fill User Phone.', 'negative');
-        if (!userListEmail) return showNotification('Please fill User Email.', 'negative');
+        if (userInfo.userRole !== 'Minion') {
+            if ( type === 'add' && !userListFirstName ) return showNotification('Please fill First Name.', 'negative');
+            if ( type === 'add' && !userListLastName ) return showNotification('Please fill Last Name.', 'negative');
+            if ( type === 'add' && !userListRole ) return showNotification('Please fill User Role.', 'negative');
+            if ( type === 'add' && !userListPhone ) return showNotification('Please fill User Phone.', 'negative');
+            if ( type === 'add' && !userListEmail ) return showNotification('Please fill User Email.', 'negative');
+        }
         const payload = {
             userListParentId,
+            parentUser,
             userListId: generateIDFromSettings(userSetting, nextUserID, 'user'),
             userListFirstName,
             userListLastName,
@@ -1058,8 +1068,10 @@ export const UserListsProvider = ({ children }) => {
             password: userListPassword || generateRandomPassword(),
             userListStatus,
             userListLastLogin,
-            userListOtpNeeded
+            userListOtpNeeded,
+            userListCreatedBy: userInfo?.mainUserId,
         };
+        console.log('Payload:', payload.email);
         try {
             const res = await axios.post(`${hostUrl}/api/userlists/save`, payload);
             if (res.status === 200 || res.status === 201) {
@@ -1131,6 +1143,7 @@ export const UserListsProvider = ({ children }) => {
             const payload = {
                 userListParentId,
                 userListId: generateIDFromSettings(userListSetting, localID, 'userList'),
+                parentUser,
                 userListFirstName: row['First Name'] || '',
                 userListLastName: row['Last Name'] || '',
                 userListRole: row['Role'] || '',
@@ -1216,6 +1229,7 @@ export const UserListsProvider = ({ children }) => {
     };
 
     const value = {
+        parentUser,
         userListFirstName,
         setUserListFirstName,
         userListLastName,
@@ -1261,6 +1275,10 @@ export const UserListsProvider = ({ children }) => {
         setFilteredData,
         userListID,
         setUserListID,
+        type,
+        setType,
+        userListCreatedBy,
+        setUserListCreatedBy,
         fetchUserLists,
         clearForm, // Export clearForm function
         isLoaded
@@ -1274,28 +1292,28 @@ export const UserListsProvider = ({ children }) => {
 };
 
 export const generateRandomPassword = (length = 10) => {
-  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
-  let password = '';
-  for (let i = 0; i < length; i++) {
-    password += chars[Math.floor(Math.random() * chars.length)];
-  }
-  return password;
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
+    let password = '';
+    for (let i = 0; i < length; i++) {
+        password += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return password;
 };
 
 export const PagesProvider = ({ children }) => {
     const [pages, setPages] = useState(localStorage.getItem('pages') || 'dashboard');
     const itemList = [
-        { name: 'Dashboard', icon: 'fas fa-chart-line', id: 'dashboard-page', active: true, sidebar: true },
-        { name: 'Payments', icon: 'fas fa-money-bill-wave', id: 'payments-page', active: false, sidebar: true },
-        { name: 'Email Templates', icon: 'fas fa-envelope', id: 'templates-page', active: false, sidebar: true },
-        { name: 'PDF Layouts', icon: 'fas fa-file-pdf', id: 'pdf-layouts-page', active: false, sidebar: true },
-        { name: 'Signatures', icon: 'fas fa-signature', id: 'signatures-page', active: false, sidebar: true },
-        { name: 'Customers', icon: 'fas fa-address-card', id: 'customers-page', active: false, sidebar: true },
-        { name: 'Users', icon: 'fas fa-users', id: 'userLists-page', active: false, sidebar: true },
-        { name: 'Settings', icon: 'fas fa-cog', id: 'settings-page', active: false, sidebar: true },
-        { name: 'Email Template', icon: 'fas fa-envelope-open-text', id: 'email-template-page', active: false, sidebar: false },
-        { name: 'PDF Template', icon: 'fas fa-file-pen', id: 'pdf-template-page', active: false, sidebar: false },
-        { name: 'User Profile', icon: 'fas fa-user-alt', id: 'userProfile-page', active: false, sidebar: false },
+        { name: 'Dashboard', icon: 'fas fa-chart-line', id: 'dashboard-page', active: true, sidebar: true, disabledpermissions: ['add', 'edit'] },
+        { name: 'Payments', icon: 'fas fa-money-bill-wave', id: 'payments-page', active: false, sidebar: true, disabledpermissions: ['view'] },
+        { name: 'Email Templates', icon: 'fas fa-envelope', id: 'templates-page', active: false, sidebar: true, disabledpermissions: ['edit'] },
+        { name: 'PDF Layouts', icon: 'fas fa-file-pdf', id: 'pdf-layouts-page', active: false, sidebar: true, disabledpermissions: ['add', 'edit'] },
+        { name: 'Signatures', icon: 'fas fa-signature', id: 'signatures-page', active: false, sidebar: true, disabledpermissions: ['view'] },
+        { name: 'Customers', icon: 'fas fa-address-card', id: 'customers-page', active: false, sidebar: true, disabledpermissions: ['edit'] },
+        { name: 'Users', icon: 'fas fa-users', id: 'userlists-page', active: false, sidebar: true, disabledpermissions: ['view'] },
+        { name: 'Settings', icon: 'fas fa-cog', id: 'settings-page', active: false, sidebar: true, disabledpermissions: ['edit'] },
+        { name: 'Email Template', icon: 'fas fa-envelope-open-text', id: 'email-template-page', active: false, sidebar: false, disabledpermissions: ['edit'] },
+        { name: 'PDF Template', icon: 'fas fa-file-pen', id: 'pdf-template-page', active: false, sidebar: false, disabledpermissions: ['edit'] },
+        { name: 'User Profile', icon: 'fas fa-user-alt', id: 'userprofile-page', active: false, sidebar: false, disabledpermissions: ['add', 'none'] },
     ];
 
     const value = { pages, setPages, itemList };
@@ -1305,3 +1323,193 @@ export const PagesProvider = ({ children }) => {
         </PagesContext.Provider>
     );
 };
+
+export const dateTimeFoormatter = (date, wdType, mnType, dyType, yrType, hrType, minType, hr12Type, beauty, timezone, locale) => {
+    if (!date) return '-';
+    const options = {
+        weekday: wdType,
+        month: mnType,
+        day: dyType,
+        year: yrType,
+        hour: hrType,
+        minute: minType,
+        hour12: hr12Type,
+        timeZone: timezone,
+        // timeZoneName: 'short',
+        // dayPeriod: 'short',
+    };
+    if (!beauty) return new Date(date).toLocaleString(locale, options);
+    const parts = new Intl.DateTimeFormat(locale, options).formatToParts(new Date(date));
+    let output = '';
+    for (const part of parts) {
+        if (part.type === 'day') {
+            const day = parseInt(part.value, 10);
+            const suffix = day >= 11 && day <= 13 ? 'th' : day % 10 === 1 ? 'st' : day % 10 === 2 ? 'nd' : day % 10 === 3 ? 'rd' : 'th';
+            output += `${day}${suffix}`;
+        } else output += part.value;
+    }
+    return output;
+};
+
+export const otpGenerator = (length = 6) => {
+    const digits = '0123456789';
+    let otp = '';
+    for (let i = 0; i < length; i++) {
+        otp += digits[Math.floor(Math.random() * digits.length)];
+    }
+    return otp;
+};
+
+export const captchaGenerator = (length = 6) => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let captcha = '';
+    for (let i = 0; i < length; i++) {
+        captcha += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return captcha;
+};
+
+export const captchaImageGenerator = (captchaText) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 200;
+    canvas.height = 100;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#f3f4f6';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '40px Arial';
+    ctx.fillStyle = '#333';
+    ctx.fillText(captchaText, 50, 50);
+    return canvas.toDataURL();
+};
+
+export const WAMessageProvider = ({ children }) => {
+    const [ waSettings, setWaSettings ] = useState(null);
+    const [ to, setTo ] = useState(null);
+    const [ message, setMessage ] = useState(null);
+    const { showNotification } = useNotification();
+    const { showModal, closeModal } = useModal();
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const res = await axios.get(`${hostUrl}/api/settings`);
+                if (res.data) setWaSettings(res.data.waSettings || DEFAULT_SETTINGS.waSettings);
+            } catch (error) {
+                console.error("Error loading settings:", error);
+            // } finally {
+            //     console.log('Done!');
+            }
+        };
+        fetchSettings();
+    }, []);
+    const sendWAMessage = () => {
+        console.log(to, message);
+        axios.post(waNewUrl, {
+            "to": to,
+            "message": message,
+            "instanceId": waSettings.waInstanseId,
+        }, {
+            headers: {
+                "x-api-key": waSettings.waApiKey,
+            }
+        }).catch((error) => {
+            console.error(error.message);
+        }).finally(() => {
+            showNotification(`Test Message Sent Successfully to ${to}!`, 'positive');
+            closeModal();
+        });
+    }
+    const value = { sendWAMessage, to, setTo, message, setMessage };
+    return (
+        <WAMessageContext.Provider value={value}>
+            {children}
+        </WAMessageContext.Provider>
+    )
+}
+
+export const EmailMessageProvider = ({ children }) => {
+    const [ emailSettings, setEmailSettings ] = useState(null);
+    const [ recipient, setRecipient ] = useState(null);
+    const [ subject, setSubject ] = useState(null);
+    const [ body, setBody ] = useState(null);
+    const [ senderName, setSenderName ] = useState(null);
+    const { showNotification } = useNotification();
+    const { showModal, closeModal } = useModal();
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const res = await axios.get(`${hostUrl}/api/settings`);
+                if (res.data) {
+                    setEmailSettings(res.data.emailSettings || DEFAULT_SETTINGS.emailSettings);
+                    setSenderName(res.data.emailSettings.senderName || '');
+                }
+            } catch (error) {
+                console.error("Error loading settings:", error);
+            // } finally {
+            //     console.log('Done!');
+            }
+        };
+        fetchSettings();
+    }, []);
+    const sendEmailMessage = async () => {
+        const emailData = {
+            to: recipient,
+            subject: subject,
+            html: body,
+            senderName: senderName
+        };
+        const response = await axios.post(`${hostUrl}/api/send-email`, emailData);
+        if (response.data.success) {
+            showNotification(`Email Sent Successfully to ${recipient}!`, 'positive');
+            closeModal();
+        } else console.error('Failed to send welcome email:', emailStatus.error);
+    };
+    const value = { sendEmailMessage, recipient, setRecipient, subject, setSubject , body, setBody };
+    return (
+        <EmailMessageContext.Provider value={value}>
+            {children}
+        </EmailMessageContext.Provider>
+    )
+}
+
+export const EmailTemplatesProvider = ({ children }) => {
+    const [ emailTemplates, setEmailTemplates ] = useState([]);
+    const [ emailTemplateId, setEmailTemplateId ] = useState(null);
+    const { showNotification } = useNotification();
+    const { showModal, closeModal } = useModal();
+    let templateCount = -1;
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const res = await axios.get(`${hostUrl}/api/emailtemplates`);
+                if (res.data) {
+                    templateCount = res.data.emailTemplates.length || -1;
+                    setEmailTemplates(res.data.emailTemplates || DEFAULT_SETTINGS.emailTemplates);
+                    if (templateCount <= 0) setEmailTemplateId(1);
+                    else setEmailTemplateId(Number(emailTemplates[emailTemplates.length - 1].id) + 1);
+                }
+            } catch (error) {
+                console.error("Error loading settings:", error);
+            // } finally {
+            //     console.log('Done!');
+            }
+        };
+        fetchSettings();
+    }, []);
+    const handleEmailTemplateSave = async () => {
+        try {
+            const response = await axios.post(`${hostUrl}/api/emailtemplates/save`, { id: emailTemplateId, emailTemplates: emailTemplates});
+            if (response.data.success) {
+                showNotification(`Email Template Saved Successfully!`, 'positive');
+                closeModal();
+            } else console.error('Failed to save email template:', response.data.error);
+        } catch (error) {
+            console.error("Error saving email template:", error);
+        }
+    }
+    const value = { emailTemplates, setEmailTemplates, handleEmailTemplateSave, emailTemplateId, setEmailTemplateId };
+    return (
+        <EmailTemplatesContext.Provider value={value}>
+            {children}
+        </EmailTemplatesContext.Provider>
+    )
+}

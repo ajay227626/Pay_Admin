@@ -56,6 +56,7 @@ function UserProfile({ status, role = "Minion" }) {
     const openUserListsModal = () => {
         showModal(
             'LOGOUT WARNING',
+            '',
             () => <p>Are you sure you want to save preferences?</p>,
             closeModal,
             "Cancel",

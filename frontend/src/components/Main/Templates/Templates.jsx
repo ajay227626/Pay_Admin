@@ -1,26 +1,28 @@
 import './templates.css';
 import React, { useState, useEffect } from "react";
-import Template_Page from './Template_Page';
+import AdvancedEmailTemplateModal from './TemplateModal/AdvancedEmailTemplateModal'
 import '../../../App';
+import { useSettings, useModal, useEmailTemplates } from '../../SettingsProvider/SettingsProvider';
 
-function Templates({ status }) {
-    // Add state and refs for editor
-    const [templateName, setTemplateName] = React.useState("");
-    const [templateSubject, setTemplateSubject] = React.useState("");
-    const [editorHtml, setEditorHtml] = React.useState("");
-    const [showModal, setShowModal] = React.useState(false);
+function Templates({ status, role = "Minion" }) {
+    const isAdmin = role === "Minion";
+    const { userSetting, permissionSettings } = useSettings();
+    const permission = permissionSettings['templates-page']?.[role];
+    const [ templateName, setTemplateName ] = useState("");
+    const [ templateSubject, setTemplateSubject ] = useState("");
+    const [ editorHtml, setEditorHtml ] = useState("");
+    const { showModal, closeModal } = useModal();
+    const [ templateList, setTemplateList ] = useState(JSON.parse(localStorage.getItem('emailTemplates')));
+    const [ selectedTemplate, setSelectedTemplate ] = useState(null);
+    const [ currentId, setCurrentId ] = useState(null);
+    const [ isModalOpen, setIsModalOpen ] = useState(false);
     const editorRef = React.useRef(null);
-    const [templateList, setTemplateList] = useState(JSON.parse(localStorage.getItem('emailTemplates')));
-    const [selectedTemplate, setSelectedTemplate] = useState(null);
-    const [currentId, setCurrentId] = useState(null);
+    const { emailTemplates, setEmailTemplates } = useEmailTemplates();
 
-    // Rich text command handler
     const handleCommand = (command, value = null) => {
         document.execCommand(command, false, value);
         setEditorHtml(editorRef.current.innerHTML);
     };
-    
-    // Delete template function
     const deleteTemplate = (templateId) => {
         const existingTemplates = JSON.parse(localStorage.getItem('emailTemplates')) || [];
         const updatedTemplates = existingTemplates.filter(template => template.id !== templateId);
@@ -31,7 +33,6 @@ function Templates({ status }) {
         }
         alert("Template deleted successfully!");
     };
-
     const insertAtCaret = (text) => {
         const editor = editorRef.current;
         if (editor) {
@@ -47,8 +48,6 @@ function Templates({ status }) {
             selection.addRange(range); // Set the new range
         }
     };
-    
-    // Show/hide template actions and close when clicking outside
     const templateAction = (event) => {
         event.stopPropagation();
         const templateCard = event.currentTarget.closest('.template-card');
@@ -58,7 +57,7 @@ function Templates({ status }) {
             setCurrentId(templateId);
             templateActions.setAttribute('ref-id', templateId);
         }
-        const actionIcon = templateCard.querySelector('.btn-action');
+        const actionIcon = templateCard.querySelector('.template-card > div > div');
         const rect = actionIcon.getBoundingClientRect();
         templateActions.style.top = `${rect.bottom + window.scrollY + 3}px`;
         // Get the sidebar width from CSS variable
@@ -89,8 +88,6 @@ function Templates({ status }) {
             }
         }, { once: true });
     };
-
-    // Close all template-actions when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             const actions = document.querySelectorAll('.template-actions.active');
@@ -115,8 +112,6 @@ function Templates({ status }) {
             window.removeEventListener('resize', handleResize);
          };
     }, []);
-
-    // Keep templateList in sync with localStorage changes (e.g., from other tabs)
     useEffect(() => {
         const syncTemplates = () => {
             setTemplateList(JSON.parse(localStorage.getItem('emailTemplates')) || []);
@@ -124,16 +119,12 @@ function Templates({ status }) {
         window.addEventListener('storage', syncTemplates);
         return () => window.removeEventListener('storage', syncTemplates);
     }, []);
-
-    // Function to make a copy of a template
     const makeACopy = (template) => {
         const newTemplate = { ...template, id: Date.now() + Math.random().toString(36).substr(2, 9) };
         const existingTemplates = JSON.parse(localStorage.getItem('emailTemplates')) || [];
         existingTemplates.push(newTemplate);
         localStorage.setItem('emailTemplates', JSON.stringify(existingTemplates));
     };
-
-    // Function to edit a template
     const editTemplate = () => {
         const template = templateList.find(t => t.id === currentId);
         console.log(template, currentId);
@@ -141,10 +132,9 @@ function Templates({ status }) {
             setTemplateName(template.name);
             setTemplateSubject(template.subject);
             setEditorHtml(template.content);
-            setShowModal(true);
+            // setShowModal(true);
         }
     };
-
     const handleInsertVariable = (variable) => {
         if (editorRef.current && document.activeElement === editorRef.current) {
             insertAtCaret(variable); // Insert variable at caret position
@@ -156,22 +146,14 @@ function Templates({ status }) {
             }
         }
     };
-
-    // Insert variable at caret
     const insertVariable = (variable) => {
         handleCommand("insertText", variable);
     };
-
-    // Handle modal open/close
-    const openModal = () => setShowModal(true);
-
-    // Set editor content when modal opens
     useEffect(() => {
         if (showModal && editorRef.current) {
             editorRef.current.innerHTML = editorHtml || "";
         }
     }, [showModal]);
-
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!templateName || !templateSubject || !editorHtml) {
@@ -184,7 +166,7 @@ function Templates({ status }) {
         setTemplateName("");
         setTemplateSubject("");
         setEditorHtml("");
-        setShowModal(false);
+        // setShowModal(false);
         if (editorRef.current) editorRef.current.innerHTML = "";
         const newTemplate = {
             id: Date.now() + Math.random().toString(36).substr(2, 9), // Generate a unique ID
@@ -219,35 +201,67 @@ function Templates({ status }) {
         // Close the modal
         closeModal();
     };
+    const handleSave = (data) => {
+        setIsModalOpen(false);
+    };
+    const openTemplateModal = (mType) => {
+        showModal(
+            'New Template',
+            '90rem',
+            <AdvancedEmailTemplateModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSave={handleSave} type={mType} />,
+            closeModal,
+            "Cancel",
+        )
+    }
+    const handleSouwBtn = (e) => {
+        const isMouseEnter = e.type === 'mouseenter';
+        const el = e.target.closest('.template-card');
+        if (!el) return;
+        const eyeButton = el.querySelector('button');
+        const dotsDiv = el.querySelector('.bx-dots-vertical-rounded')?.closest('div');
+        if (isMouseEnter) {
+            if (eyeButton) eyeButton.classList.remove('text-white');
+            if (dotsDiv) dotsDiv.classList.remove('text-white');
+        } else {
+            if (eyeButton) eyeButton.classList.add('text-white');
+            if (dotsDiv) dotsDiv.classList.add('text-white');
+        }
+    };
 
     return (
         <>
             {/* Templates Page */}
-            <section id="templates-page" className={`page ${status}`}>
+            <section id="templates-page" className={`page ${ status }`}>
                 <div className="page-header">
                     <div className="page-title">
                         <h2>Email Templates</h2>
                         <p>Create and manage email templates</p>
                     </div>
-                    <div className="page-actions">
-                        <button className="btn btn-primary" id="newTemplateBtn" onClick={openModal}>
-                            <i className="fas fa-plus"></i> New Template
-                        </button>
-                    </div>
+                    {( isAdmin || permission === 'add' ) && (
+                        <div className="page-actions">
+                            <button className="btn btn-primary" id="newTemplateBtn" onClick={() => openTemplateModal('edit')}>
+                                <i className="fas fa-plus"></i> New Template
+                            </button>
+                        </div>
+                    )}
                 </div>
-                <div className="templates-grid">
+                <div className={emailTemplates.length > 0 ? `templates-grid` : ''}>
                    {
-                        templateList && templateList.length > 0 ? (
-                            templateList.map((template) =>
+                        emailTemplates && emailTemplates.length > 0 ? (
+                            emailTemplates.map((template) =>
                                 template.name !== '' ? (
-                                    <div className="template-card" key={template.id} data-id={template.id}>
+                                    <div className="template-card relative" key={template.id || 1} data-id={template.id || 1} onMouseEnter={handleSouwBtn} onMouseLeave={handleSouwBtn}>
                                         <h3>{template.name}</h3>
+                                        <p className="hidden">{template.category}</p>
                                         <p>{template.subject}</p>
-                                        <div style={{ position: "absolute", top: "0.5rem", right: "0.5rem", textAlign: "right" }}>
-                                            <div className="btn btn-seconsary btn-action" style={{ color: "var(--secondary-color)" }} onClick={templateAction} onBlur={templateAction}>
+                                        <div className='absolute top-2 right-2'>
+                                            <div className="hover:text-cbx-dark hover:bg-cbx-light py-2 px-2 rounded-full hover:cursor-pointer hover:bold flex items-center justify-center" onClick={templateAction} onBlur={templateAction}>
                                                 <i className='bx bx-dots-vertical-rounded'></i>
                                             </div>
                                         </div>
+                                        <div className='absolute top-3 right-12' onClick={() => openTemplateModal('view')}><button className='border-0 hover:text-cbx-dark'><i className='fa fa-eye'></i></button></div>
+                                        <p className="hidden">{template.downloads}</p>
+                                        <p className="hidden">{template.createdOn}</p>
                                     </div>
                                 ) : ''
                             )
@@ -264,15 +278,13 @@ function Templates({ status }) {
                 <div className="template-action" onClick={makeACopy}><><i className="fas fa-copy"></i>Duplicate</></div>
             </div>
 
-            {showModal && (
+            {/* {showModal && (
                 document.querySelectorAll('.page').forEach(page => {
-                    if (page.id === 'template_page') {
-                        page.classList.add('active');
-                    } else {
-                        page.classList.remove('active');
-                    }
+                    if (page.id === 'templates-page') page.classList.add('active');
+                    else page.classList.remove('active');
                 })
-            )}
+            )} */}
+            {/* <AdvancedEmailTemplateModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSave={handleSave} templateData={{ name: 'Welcome Email', content: '<h1>Welcome to our platform!</h1><p>We\'re excited to have you on board.</p>' }} /> */}
         </>
     );
 }

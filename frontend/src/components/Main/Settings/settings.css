@@ -13,17 +13,17 @@
 }
 
 .input-group-addon {
-  cursor: pointer;
-  background-color: var(--surface-color);
-  color: var(--ceoitbox-dark-color);
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    cursor: pointer;
+    background-color: var(--surface-color);
+    color: var(--ceoitbox-dark-color);
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .checkbox-group {
@@ -115,6 +115,266 @@ input[type="color"]::-webkit-color-swatch-wrapper {
     transform: 'rotate(45deg)';
 }
 
+.select-control {
+    border-bottom: 1px dashed var(--border-color);
+    border-right: 1px dashed var(--border-color);
+    padding: 0.25rem;
+    text-align: center;
+    color: var(--ceoitbox-dark-color);
+    white-space: nowrap;
+}
+
+.select-control:last-child {
+    border-right: none;
+}
+
+select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--ceoitbox-dark-color);
+}
+
+/* arrow */
+select::-ms-expand {
+    display: none;
+}
+
+/* options */
+.option-td-control {
+    background-color: var(--surface-color);
+    font-size: 0.875rem;
+    border-bottom: 1px dashed var(--border-color);
+    border-right: 1px dashed var(--border-color);
+    text-align: center;
+}
+
+.option-td-control:last-child {
+    border-right: none;
+}
+
+.option-control {
+    background-color: var(--surface-color);
+    border-bottom: 1px dashed var(--border-color);
+    border-right: 1px dashed var(--border-color);
+    text-align: center;
+    color: var(--ceoitbox-dark-color);
+}
+
+.permission-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.page-permission-editor {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.permission-table {
+    border-collapse: collapse;
+    /* width: 100%; */
+    text-align: left;
+}
+
+.option-custom {
+    display: flex;
+    align-items: center;
+    padding: 0.4rem 0.6rem;
+    color: var(--ceoitbox-dark-color);
+    cursor: grab;
+    font-size: 0.875rem;
+}
+
+.option-custom.disabled {
+    background-color: var(--ceoitbox-transparent-color);
+    cursor: not-allowed;
+    caret-color: var(--danger-color);
+}
+
+.option-custom:hover {
+    background-color: var(--ceoitbox-dark-color);
+    color: var(--surface-color);
+}
+
+.option-custom.disabled:hover {
+    background-color: var(--ceoitbox-transparent-color);
+    color: var(--ceoitbox-dark-color);
+}
+
+.page-permission-editor {
+    position: relative;
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+.permission-table {
+    width: max-content;
+    border-collapse: collapse;
+}
+
+.sticky-column {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background-color: var(--surface-color);
+    box-shadow: 2px 0 4px -2px rgba(0,0,0,0.1);
+}
+
+.permission-table thead th.sticky-column {
+    z-index: 3;
+}
+
+.entry-list {
+    display: flex;
+    max-height: 200px;
+    overflow-y: auto;
+    border-radius: 5px;
+    background-color: var(--surface-color);
+}
+
+.entry-item {
+    padding: 5px 10px;
+    background-color: var(--ceoitbox-transparent-color);
+    margin: 5px;
+    border-radius: 5px;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+}
+
+.entry-item:hover .remove-entry {
+    display: inline;
+}
+
+.entry-name {
+    display: inline-block;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--ceoitbox-dark-color);
+    font-size: 0.875rem;
+}
+
+.remove-entry {
+    display: none;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.collapsible-content {
+    gap: 0.5rem;
+    display: flex;
+    flex-direction: column
+}
+
+.input-group {
+    width: 100%;
+    position: relative;
+    margin-bottom: 0.5rem;
+}
+
+.input-group input,
+.input-group textarea {
+    width: 100%;
+    min-width: 250px;
+    font-size: 14px;
+    border: 1px dashed var(--border-color);
+    border-radius: 4px;
+    z-index: 1;
+    background: transparent;
+}
+
+.input-group textarea {
+    resize: vertical;
+    padding: 0.5rem;
+}
+
+.input-group select {
+    width: 100%;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px dashed var(--border-color);
+    border-radius: 4px;
+    padding: 8px;
+    background: transparent;
+    color: var(--ceoitbox-dark-color);
+    opacity: 0.6;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+    outline: none;
+    border-color: var(--ceoitbox-light-color);
+    opacity: 1;
+}
+
+.input-group select:focus {
+    outline: none;
+    border-color: var(--ceoitbox-light-color);
+}
+
+.input-group input::placeholder,
+.input-group textarea::placeholder {
+    opacity: 0.6;
+    color: transparent !important;
+}
+
+.input-group input:focus::placeholder,
+.input-group textarea:focus::placeholder {
+    opacity: 0.6;
+    color: transparent !important;
+}
+
+.form-input-label {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    background-color: var(--surface-color);
+    padding: 0 4px;
+    font-size: 14px;
+    color: var(--ceoitbox-dark-color) !important;
+    font-weight: 600;
+    opacity: 0.6;
+    pointer-events: none;
+    transition: 0.2s ease all;
+}
+
+.form-select-label {
+    position: absolute;
+    left: 6px;
+    top: -10px !important;
+    background-color: var(--surface-color);
+    padding: 0 4px;
+    font-size: 12px !important;
+    color: var(--ceoitbox-dark-color) !important;
+    font-weight: 600;
+    opacity: 1;
+    pointer-events: none;
+    transition: 0.2s ease all;
+    z-index: 2;
+}
+
+.input-group input:focus + .form-input-label,
+.input-group textarea:focus + .form-input-label,
+.input-group input:not(:placeholder-shown) + .form-input-label,
+.input-group textarea:not(:placeholder-shown) + .form-input-label {
+    top: -10px;
+    left: 6px;
+    font-size: 12px;
+    opacity: 1;
+    z-index: 2;
+}
+
 @media (max-width: 1600px) and (min-width: 1400px) {
     .checkbox-group,
     .dual-field {
@@ -145,79 +405,6 @@ input[type="color"]::-webkit-color-swatch-wrapper {
     .settings-grid {
         column-count: 1;
     }
-}
-
-.select-control {
-    border-bottom: 1px dashed var(--ceoitbox-light-color);
-    border-right: 1px dashed var(--ceoitbox-light-color);
-    padding: 0.25rem;
-    text-align: center;
-    color: var(--ceoitbox-dark-color);
-    white-space: nowrap;
-}
-
-.select-control:last-child {
-    border-right: none;
-}
-
-select:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px var(--ceoitbox-dark-color);
-}
-
-/* arrow */
-select::-ms-expand {
-    display: none;
-}
-
-/* options */
-.option-td-control {
-    background-color: var(--surface-color);
-    font-size: 0.875rem;
-    border-bottom: 1px dashed var(--border-color);
-    border-right: 1px dashed var(--ceoitbox-light-color);
-    text-align: center;
-}
-
-.option-td-control:last-child {
-    border-right: none;
-}
-
-.option-control {
-    background-color: var(--surface-color);
-    border-bottom: 1px dashed var(--border-color);
-    border-right: 1px dashed var(--ceoitbox-light-color);
-    text-align: center;
-    color: var(--ceoitbox-dark-color);
-}
-
-.permission-table tbody tr:last-child td {
-    border-bottom: 1px dashed var(--ceoitbox-light-color);
-}
-
-.page-permission-editor {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-
-.permission-table {
-    border-collapse: collapse;
-    width: 100%;
-    margin-bottom: 1rem;
-    text-align: 'left';
-}
-
-.option-custom {
-    display: flex;
-    align-items: center;
-    padding: 0.4rem 0.6rem;
-    color: var(--ceoitbox-dark-color);
-}
-
-.option-custom:hover {
-    background-color: var(--ceoitbox-dark-color);
-    color: var(--surface-color);
 }
 
 @media (max-width: 968px) {
